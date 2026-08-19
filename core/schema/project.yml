@@ -1,15 +1,8 @@
-# Copyright (c) 2015 Shotgun Software Inc.
-#
-# CONFIDENTIAL AND PROPRIETARY
-#
-# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
-# Source Code License included in this distribution package. See LICENSE.
-# By accessing, using, copying or modifying this work you indicate your
-# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
-# not expressly granted therein are reserved by Shotgun Software Inc.
+# Standard Toolkit project root. Folder name comes from the Project's
+# Tank Name field, which the project-creator tool sets to the project's
+# short code (e.g. "STRM") — see model.py tank_name assignment.
 
-# the type of dynamic content
 type: "project"
 
-# name of project root as defined in roots.yml
+# name of project root as defined in roots.yml / Local Storage "primary"
 root_name: "primary"

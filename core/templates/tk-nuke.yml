@@ -1,108 +1,116 @@
-# MIT License
+# Studio ShotGrid Toolkit templates.yml
+# Custom convention (not NFA's) — see conversation for design decisions.
 #
-# Copyright (c) 2024 Netherlands Film Academy
+# SINGLE STORAGE ROOT ("primary"), pointing at /jobs/<ProjectName>
+# (configured as a Local Storage entity in ShotGrid Site Preferences).
+# Artists/ and Projects/ are both subfolders under this one root.
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
+# Folder structure:
+#   Artists/<ProjectCode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   e.g. Artists/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# Plates:
+#   Projects/<ProjectCode>/Plates/<Sequence>/<Shot>/
+#   e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
+# Notes:
+# - {Shot} is the FULL composite shot code as stored in ShotGrid (e.g. STRM_E2_0010),
+#   already encoding project code + sequence + shot number. It is NOT decomposed.
+# - {Sequence} is the episode/sequence folder (e.g. EP_2), kept separate from {Shot}.
+# - {ProjectCode} is the short project code folder directly under Artists/ (e.g. STRM).
+# - No separate work/publish/render split within Artists/ — single unified area
+#   per shot/step (unlike NFA's 03_workfiles/04_publish/05_renders).
+# - Version padding: 3 digits (v001, v002, ...).
+
+keys:
+  Sequence:
+    type: str
+  Shot:
+    type: str
+  Step:
+    type: str
+  ProjectCode:
+    type: str
+    shotgun_entity_type: Project
+    shotgun_field_name: sg_projectcode
+  ProjectName:
+    type: str
+    shotgun_entity_type: Project
+    shotgun_field_name: name
+  name:
+    type: str
+    filter_by: alphanumeric
+  version:
+    type: int
+    format_spec: "03"
+  SEQ:
+    type: sequence
+    format_spec: "04"
+  timestamp:
+    type: str
+  write.output:
+    alias: output
+    type: str
+    filter_by: alphanumeric
 
 paths:
-  # Template files
+  # Studio-wide Nuke starter template script (used by tk-nuke-template app
+  # when opening a new work file for a task). One shared file for now —
+  # add per-department variants later if needed (e.g. separate Roto/Paint).
   nuke_template_file:
-    definition: "00_pipeline/nuke/template/ShotGridTemplate.nk"
+    definition: "00_pipeline/nuke/template/StudioTemplate.nk"
+
+  # Root of a shot's working area. No explicit root_name -> uses the
+  # default "primary" storage root.
+  shot_root: Artists/{ProjectCode}/{Sequence}/{Shot}/{Step}
 
   ##########################################################################################
-  # Shot level paths
+  # Nuke — shot level
   #
 
-  # define the location of a work area
   shot_work_area_nuke:
-    definition: "@shot_root/nuke"
-  # define the location of a publish area
-  shot_publish_area_nuke:
-    definition: "@shot_publish/nuke"
-  # The location of WIP script files
+    definition: "@shot_root/Nuke/{Step}"
+
+  # Working Nuke script.
+  # e.g. STRM_E2_0010_comp_v001.nk
   nuke_shot_work:
-    definition: "@shot_root/nuke/{Projectcode}_sc{Sequence}_{Shot}_{Step}_work_{name}_v{version}.nk"
-  # The location of backups of WIP files
+    definition: "@shot_root/Nuke/{Step}/{Shot}_{Step}_v{version}.nk"
+
+  # Snapshots/autosave backups of the working script.
   nuke_shot_snapshot:
-    definition: "@shot_root/nuke/snapshots/{Projectcode}_sc{Sequence}_{Shot}_{Step}_snap_{name}_v{version}_{timestamp}.nk"
-  # The location of published nuke script files
+    definition: "@shot_root/Nuke/{Step}/snapshots/{Shot}_{Step}_v{version}_{timestamp}.nk"
+
+  # "Publish" template/area — same location as work, since this studio has
+  # no separate work/publish split (unlike NFA's 03_workfiles/04_publish).
+  # Workfiles2 and Publish2 both need a publish template even in a unified
+  # layout, to track publish state in their UI.
+  shot_publish_area_nuke:
+    definition: "@shot_work_area_nuke"
+
   nuke_shot_publish:
-    definition: "@shot_publish/nuke/{Projectcode}_sc{Sequence}_{Shot}_{Step}_pub_{name}_v{version}.nk"
-  # Write node outputs
+    definition: "@nuke_shot_work"
+
+  # Plate location — under Projects/ (client-delivered source material),
+  # same "primary" root, just a different subfolder than Artists/.
+  # 4-digit frame padding, .exr.
+  # e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
+  shot_plate:
+    definition: "Projects/{ProjectCode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
+
+  # Write node EXR output — stays under Artists/ alongside work files.
   nuke_shot_render:
-    definition: "@shot_root/nuke/renders/{name}/{write.output}/v{version}/{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
-    root_name: "render"
+    definition: "@shot_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+
+  # "Publish" alias for the render template — same location, no split.
   nuke_shot_render_pub:
-    definition: "@shot_render_publish/nuke/{name}/{write.output}/render/v{version}/{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
-  nuke_shot_tiff_render:
-    definition: "@shot_root/nuke/renders/{name}/{write.output}/v{version}/{Projectcode}_{Sequence}_{Shot}_{name}_{write.output}_v{version}.{SEQ}.tiff"
-    root_name: "render"
-  nuke_shot_tiff_render_pub:
-    definition: "@shot_render_publish/nuke/{name}/{write.output}/render/v{version}/{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.tiff"
-  # Review output
-  shot_quicktime_quick:
-    definition: "@shot_root/nuke/previews/{name}/{Projectcode}_{Sequence}_{Shot}_{name}_{write.output}_sRGB_v{version}_{iteration}.mov"
+    definition: "@nuke_shot_render"
+
+  # Review MOV output.
   nuke_shot_render_movie:
-    definition: "@shot_render_publish/nuke/{name}/{write.output}/mov/{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_sRGB_v{version}.mov"
-
-  ##########################################################################################
-  # Asset pipeline
-  #
-
-  # define the location of a work area
-  asset_work_area_nuke:
-    definition: "@asset_root/work/nuke"
-  # define the location of a publish area
-  asset_publish_area_nuke:
-    definition: "@asset_root/publish"
-  # outputs from the Shotgun Write Node for assets
-  nuke_asset_render:
-    definition: "@asset_root/nuke/renders/{name}/{write.output}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
-    root_name: "render"
-  nuke_asset_render_pub:
-    definition: "@asset_render_publish/nuke/{name}/{write.output}/render/v{version}/{Projectcode}_{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
-  nuke_asset_tiff_render:
-    definition: "@asset_root/nuke/renders/{name}/{write.output}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.tiff"
-    root_name: "render"
-  nuke_asset_tiff_render_pub:
-    definition: "@asset_render_publish/nuke/{name}/{write.output}/render/v{version}/{Projectcode}_{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.tiff"
-
-  # review output
-  nuke_asset_render_movie:
-    definition: "@asset_render_publish/nuke/{name}/{write.output}/mov/{Projectcode}_{Asset}_{Step}_{name}_{write.output}_sRGB_v{version}.mov"
-  asset_quicktime_quick:
-    definition: "@asset_render_publish/nuke/{name}/{write.output}/mov/{Projectcode}_{Asset}_{Step}_{name}_{iteration}.mov"
-  # The location of WIP script files
-  nuke_asset_work:
-    definition: "@asset_root/nuke/{Projectcode}_{Asset}_{Step}_{name}_work_v{version}.nk"
-  # The location of backups of WIP files
-  nuke_asset_snapshot:
-    definition: "@asset_root/nuke/snapshots/{Projectcode}_{Asset}_{Step}_{name}_snap_v{version}_{timestamp}.nk"
-  # The location of published nuke script files
-  nuke_asset_publish:
-    definition: "@asset_publish/nuke/{Projectcode}_{Asset}_{Step}_{name}_pub_v{version}.nk"
+    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
 
 strings:
-  # when a review Version in Shotgun is created inside of Nuke, this is the
-  # name that is being given to it (the code field)
-  nuke_shot_version_name: "{Sequence}_{Shot}_[{Step}_]_nuke_{name}_{write.output}_[{colorspace}_]v{version}[.{iteration}]"
-  nuke_quick_shot_version_name: "{Shot}_{name}_quick_{iteration}"
+  # Version entity name shown in ShotGrid when Publish2 creates a review Version.
+  nuke_shot_version_name: "{Shot}_{Step}_{name}_v{version}"
 
-  nuke_asset_version_name: "{Asset}_[{Step}_]_nuke_{name}_{write.output}_[{colorspace}_]v{version}[.{iteration}]"
-  nuke_quick_asset_version_name: "{Asset}_{name}_quick_{iteration}"
+

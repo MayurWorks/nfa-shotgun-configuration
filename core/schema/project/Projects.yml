@@ -1,0 +1,4 @@
+# Static folder — always literally named "Projects".
+# Holds client-delivered source material (e.g. plates) for this project.
+
+type: "static"
