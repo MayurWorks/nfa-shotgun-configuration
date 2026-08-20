@@ -1,0 +1,16 @@
+# Studio storage roots definition.
+#
+# This config uses a single root, matching the single "primary" Local
+# Storage configured in ShotGrid (Site Preferences -> File Management).
+# Artists/ and Projects/ are both subfolders under this one root, not
+# separate storages (see templates.yml and core/schema/project/).
+#
+# shotgun_storage_id is intentionally omitted: Toolkit matches this root
+# to the ShotGrid Local Storage by name ("primary") when not specified.
+
+primary:
+  description: "Primary studio storage root. All project data (Artists/ and Projects/ subfolders) lives under this single root."
+  mac_path: null
+  linux_path: /jobs/SlateX
+  windows_path: null
+  default: true
