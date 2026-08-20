@@ -16,6 +16,20 @@ includes:
 ################################################################################
 # Nuke
 
+# project (minimal — used when launching Nuke from ShotGrid Desktop's
+# project-level launcher, before a specific Shot/Task is picked. Once the
+# artist opens a Shot/Task via File Open, Toolkit switches context into
+# shot_step, which has the full app set: Publish2, Loader2, Writenode, etc.)
+settings.tk-nuke.project:
+  apps:
+    tk-multi-about:
+      location: "@apps.tk-multi-about.location"
+    tk-multi-workfiles2: "@settings.tk-multi-workfiles2"
+    tk-nuke-template: "@settings.tk-nuke-template.shot_step"
+  menu_favourites:
+  - {app_instance: tk-multi-workfiles2, name: File Open...}
+  location: "@engines.tk-nuke.location"
+
 # shot_step
 settings.tk-nuke.shot_step:
   apps:
