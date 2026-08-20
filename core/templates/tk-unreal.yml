@@ -73,7 +73,7 @@ paths:
   # The location of turntable review output rendered in Unreal
   unreal.maya_turntable_render:
     definition: "@asset_root/unreal/renders/{name}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_v{version}.{ue_mov_ext}"
-    root_name: "render"
+    root_name: "primary"
   unreal.maya_turntable_publish:
     definition: "@asset_render_publish/unreal/{name}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_v{version}.{ue_mov_ext}"
   # Placeholder location for static mesh assets exported from Unreal

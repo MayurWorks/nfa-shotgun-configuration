@@ -60,15 +60,15 @@ paths:
   # Alembic caches
   houdini_shot_work_alembic_cache:
     definition: "@shot_root/houdini/cache/alembic/{houdini.node}/v{version}/{Projectcode}_sc{Sequence}_{Shot}_{Step}_work_{name}_v{version}.abc"
-  #    root_name: "render" # Place on source until can be published from render to source
+  #    root_name: "primary" # Place on source until can be published from render to source
   # Fbx caches
   houdini_shot_work_fbx_cache:
     definition: "@shot_root/houdini/cache/fbx/{houdini.node}/v{version}/{Projectcode}_sc{Sequence}_{Shot}_{Step}_work_{name}_v{version}.fbx"
-  #    root_name: "render" # Place on source until can be published from render to source
+  #    root_name: "primary" # Place on source until can be published from render to source
   # File work caches
   houdini_shot_work_file_cache:
     definition: "@shot_root/houdini/cache/bgeo/{name}/v{version}/{Projectcode}_sc{Sequence}_{Shot}_{Step}_work_{name}_v{version}.{SEQ}.bgeo"
-    root_name: "render"
+    root_name: "primary"
   # File publish caches
   houdini_shot_publish_file_cache:
     definition: "@shot_publish/cache/bgeo/{name}/v{version}/{Projectcode}_sc{Sequence}_{Shot}_{Step}_pub_{name}_v{version}.{SEQ}.bgeo"
@@ -76,7 +76,7 @@ paths:
   # Rendered images
   houdini_shot_render:
     definition: "@shot_root/houdini/renders/{name}/{write.output}/v{version}/[{aov_name}/]{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_[{aov_name}_]v{version}.{SEQ}.exr"
-    root_name: "render"
+    root_name: "primary"
   houdini_shot_render_pub:
     definition: "@shot_render_publish/houdini/{name}/{write.output}/render/v{version}/[{aov_name}/]{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{write.output}_[{aov_name}_]v{version}.{SEQ}.exr"
   houdini_shot_render_review:
@@ -87,19 +87,19 @@ paths:
   # Additional outputs
   houdini_shot_extra_plane:
     definition: "@shot_root/houdini/renders/{name}/extra/v{version}/{aov_name}/{Projectcode}_{Sequence}_{Shot}_{Step}_{name}_{aov_name}_v{version}.{SEQ}.exr"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_shot_ifd:
     definition: "@shot_root/houdini/ifds/{name}/v{version}/{Projectcode}_{Sequence}_{Shot}_{name}_v{version}.{SEQ}.ifd"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_shot_dcm:
     definition: "@shot_root/houdini/dcms/{name}/v{version}/{Projectcode}_{Sequence}_{Shot}_{name}_v{version}.{SEQ}.dcm"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_shot_ass:
     definition: "@shot_root/houdini/ass/{name}/v{version}/{Projectcode}_{Sequence}_{Shot}_{name}_v{version}.{SEQ}.ass"
-    root_name: "render"
+    root_name: "primary"
 
   ##########################################################################################
   # Asset pipeline
@@ -123,15 +123,15 @@ paths:
   # Alembic caches
   houdini_asset_work_alembic_cache:
     definition: "@asset_root/houdini/cache/alembic/{name}/{houdini.node}/v{version}/{Projectcode}_{Asset}_{Step}_work_v{version}.abc"
-  #    root_name: "render" # Place on source until can be published from render to source
+  #    root_name: "primary" # Place on source until can be published from render to source
   # fbx caches
   houdini_asset_work_fbx_cache:
     definition: "@asset_root/houdini/cache/fbx/{name}/{houdini.node}/v{version}/{Projectcode}_{Asset}_{Step}_work_v{version}.fbx"
-  #    root_name: "render" # Place on source until can be published from render to source
+  #    root_name: "primary" # Place on source until can be published from render to source
   # File work caches
   houdini_asset_work_file_cache:
     definition: "@asset_root/houdini/cache/bgeo/{name}/v{version}/{Projectcode}_{Asset}_{Step}_work_{name}_v{version}.{SEQ}.bgeo"
-    root_name: "render"
+    root_name: "primary"
   # File publish caches
   houdini_asset_publish_file_cache:
     definition: "@asset_publish/cache/bgeo/{name}/v{version}/{Projectcode}_{Asset}_{Step}_pub_{name}_v{version}.{SEQ}.bgeo"
@@ -139,7 +139,7 @@ paths:
   # Rendered images
   houdini_asset_render:
     definition: "@asset_root/houdini/renders/{name}/{write.output}/v{version}/[{aov_name}/]{Projectcode}_{Asset}_{Step}_{name}_{write.output}_[{aov_name}_]v{version}.{SEQ}.exr"
-    root_name: "render"
+    root_name: "primary"
   houdini_asset_render_pub:
     definition: "@asset_render_publish/houdini/{name}/{write.output}/render/v{version}/[{aov_name}/]{Projectcode}_{Asset}_{Step}_{name}_{write.output}_[{aov_name}_]v{version}.{SEQ}.exr"
   houdini_asset_render_review:
@@ -150,19 +150,19 @@ paths:
   # Additional outputs
   houdini_asset_extra_plane:
     definition: "@asset_root/houdini/renders/{name}/extra/v{version}/{aov_name}/{Projectcode}_{Asset}_{Step}_{name}_{aov_name}_v{version}.{SEQ}.exr"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_asset_ifd:
     definition: "@asset_root/houdini/ifds/{name}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_v{version}.{SEQ}.ifd"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_asset_dcm:
     definition: "@asset_root/houdini/dcms/{name}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_v{version}.{SEQ}.dcm"
-    root_name: "render"
+    root_name: "primary"
 
   houdini_asset_ass:
     definition: "@asset_root/houdini/ass/{name}/v{version}/{Projectcode}_{Asset}_{Step}_{name}_v{version}.{SEQ}.ass"
-    root_name: "render"
+    root_name: "primary"
 
 strings:
   houdini_asset_version_name: "{Asset}_[{Step}_]_houdini_{name}_{write.output}_[{colorspace}_]v{version}"
