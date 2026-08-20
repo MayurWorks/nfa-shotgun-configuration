@@ -1,6 +1,10 @@
 # SG Pipeline Toolkit configuration file. This file was automatically
 # created during the latest core update.
+#
+# Bumped from v0.21.7 to v0.23.8 per Autodesk's official guidance to fix:
+# "No module named 'tank_vendor.six.moves'" on newer Python (3.13).
+# See: https://www.autodesk.com/support/technical/article/caas/sfdcarticles/sfdcarticles/Error-No-module-named-tank-vendor-shotgun-ap13-lib-six-moves-and-latest-version-of-Flow-Production-Tracking-Desktop-v3-0-0-is-broken.html
 location:
   name: tk-core
   type: app_store
-  version: v0.21.7
+  version: v0.23.8
