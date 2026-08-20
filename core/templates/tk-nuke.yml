@@ -3,11 +3,15 @@
 #
 # SINGLE STORAGE ROOT ("primary"), pointing at /jobs/<ProjectName>
 # (configured as a Local Storage entity in ShotGrid Site Preferences).
-# Artists/ and Projects/ are both subfolders under this one root.
+# Artists/, Publish/, and Projects/ are all subfolders under this one root.
 #
-# Folder structure:
+# Work folder structure:
 #   Artists/<ProjectCode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
 #   e.g. Artists/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#
+# Publish folder structure (mirrors Artists/, own top-level tree):
+#   Publish/<ProjectCode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   e.g. Publish/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
 # Plates:
 #   Projects/<ProjectCode>/Plates/<Sequence>/<Shot>/
@@ -18,8 +22,12 @@
 #   already encoding project code + sequence + shot number. It is NOT decomposed.
 # - {Sequence} is the episode/sequence folder (e.g. EP_2), kept separate from {Shot}.
 # - {ProjectCode} is the short project code folder directly under Artists/ (e.g. STRM).
-# - No separate work/publish/render split within Artists/ — single unified area
-#   per shot/step (unlike NFA's 03_workfiles/04_publish/05_renders).
+# - Work and Publish ARE separated as two top-level trees. Toolkit requires every
+#   template's resolved path to be unique (root_name, definition) — aliasing a
+#   publish template to the exact same path as its work template is rejected at
+#   load time with "duplicate entries in your templates.yml file". A real,
+#   distinct Publish/ tree is the standard, supported pattern (matches Shotgun's
+#   own tk-config-default2), so we use that instead of NFA's numbered folders.
 # - Version padding: 3 digits (v001, v002, ...).
 
 keys:
@@ -60,9 +68,13 @@ paths:
   nuke_template_file:
     definition: "00_pipeline/nuke/template/StudioTemplate.nk"
 
-  # Root of a shot's working area. No explicit root_name -> uses the
+  # Root of a shot's WORK area. No explicit root_name -> uses the
   # default "primary" storage root.
   shot_root: Artists/{ProjectCode}/{Sequence}/{Shot}/{Step}
+
+  # Root of a shot's PUBLISH area — mirrors shot_root under a separate
+  # top-level Publish/ tree.
+  shot_publish_root: Publish/{ProjectCode}/{Sequence}/{Shot}/{Step}
 
   ##########################################################################################
   # Nuke — shot level
@@ -80,15 +92,13 @@ paths:
   nuke_shot_snapshot:
     definition: "@shot_root/Nuke/{Step}/snapshots/{Shot}_{Step}_v{version}_{timestamp}.nk"
 
-  # "Publish" template/area — same location as work, since this studio has
-  # no separate work/publish split (unlike NFA's 03_workfiles/04_publish).
-  # Workfiles2 and Publish2 both need a publish template even in a unified
-  # layout, to track publish state in their UI.
+  # Publish area/file — real, distinct location under Publish/, not an
+  # alias of the work template.
   shot_publish_area_nuke:
-    definition: "@shot_work_area_nuke"
+    definition: "@shot_publish_root/Nuke/{Step}"
 
   nuke_shot_publish:
-    definition: "@nuke_shot_work"
+    definition: "@shot_publish_root/Nuke/{Step}/{Shot}_{Step}_v{version}.nk"
 
   # Plate location — under Projects/ (client-delivered source material),
   # same "primary" root, just a different subfolder than Artists/.
@@ -97,13 +107,13 @@ paths:
   shot_plate:
     definition: "Projects/{ProjectCode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
 
-  # Write node EXR output — stays under Artists/ alongside work files.
+  # Write node EXR output — WIP renders stay under Artists/ alongside work files.
   nuke_shot_render:
     definition: "@shot_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
-  # "Publish" alias for the render template — same location, no split.
+  # Published EXR output — real, distinct location under Publish/.
   nuke_shot_render_pub:
-    definition: "@nuke_shot_render"
+    definition: "@shot_publish_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
   # Review MOV output.
   nuke_shot_render_movie:
@@ -112,5 +122,3 @@ paths:
 strings:
   # Version entity name shown in ShotGrid when Publish2 creates a review Version.
   nuke_shot_version_name: "{Shot}_{Step}_{name}_v{version}"
-
-
