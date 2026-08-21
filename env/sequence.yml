@@ -17,16 +17,18 @@ description: Apps and engines loaded when a Sequence is loaded. Since std VFX
   in the shot_step environment. This environment mostly contains utility apps
   and the tank work files app, which lets you choose a task to work on and load
   associated content into an application.
+#
+# TRIMMED from NFA's original: removed tk-3dsmax, tk-3dsmaxplus, tk-houdini,
+# tk-maya, tk-motionbuilder includes/engines. Those DCC settings files
+# reference core template files (e.g. tk-3dsmaxplus.yml) that don't exist
+# in this fork's core/templates/, or template names not yet defined. Kept
+# only the DCCs/utilities that are verified working: Nuke, shell, shotgun.
+# Re-add other DCCs here once their templates are built out and verified.
 
 ################################################################################
 
 includes:
 - ./includes/frameworks.yml
-- ./includes/settings/tk-3dsmaxplus.yml
-- ./includes/settings/tk-3dsmax.yml
-- ./includes/settings/tk-houdini.yml
-- ./includes/settings/tk-maya.yml
-- ./includes/settings/tk-motionbuilder.yml
 - ./includes/settings/tk-nuke.yml
 - ./includes/settings/tk-shell.yml
 - ./includes/settings/tk-shotgun.yml
@@ -35,11 +37,6 @@ includes:
 # configuration for all engines to load in a sequence context
 
 engines:
-  tk-3dsmaxplus: "@settings.tk-3dsmaxplus.sequence"
-  tk-3dsmax: "@settings.tk-3dsmax.sequence"
-  tk-houdini: "@settings.tk-houdini.sequence"
-  tk-maya: "@settings.tk-maya.sequence"
-  tk-motionbuilder: "@settings.tk-motionbuilder.sequence"
   tk-nuke: "@settings.tk-nuke.sequence"
   tk-shell: "@settings.tk-shell.sequence"
   tk-shotgun: "@settings.tk-shotgun.sequence"

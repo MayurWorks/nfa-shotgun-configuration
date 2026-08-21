@@ -1,58 +1,37 @@
-# Copyright (c) 2017 Shotgun Software Inc.
+# Apps and Engines related to Asset based work (per-Step context).
 #
-# CONFIDENTIAL AND PROPRIETARY
+# STUBBED OUT: this studio doesn't have an asset pipeline yet (shot-based
+# only, see env/shot_step.yml for the real, working Nuke pipeline).
 #
-# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
-# Source Code License included in this distribution package. See LICENSE.
-# By accessing, using, copying or modifying this work you indicate your
-# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
-# not expressly granted therein are reserved by Shotgun Software Inc.
+# NFA's original version of this file referenced templates and DCC configs
+# (Alias, VRED, 3ds Max, Houdini, Maya, Photoshop, After Effects,
+# MotionBuilder, SubstancePainter, Unreal) that either don't exist in this
+# fork's core/templates/ or were already broken/missing in NFA's own
+# upstream repo (e.g. tk-alias.yml and tk-vred.yml template files never
+# existed there). Since Toolkit validates every env/*.yml file at
+# bootstrap under CACHE_FULL (set by tk-desktop), leaving those broken
+# references in place blocks Nuke from launching at all, even though this
+# file is otherwise unused.
 #
+# When building out a real asset pipeline: design asset-level templates
+# in core/templates/tk-nuke.yml (see asset_root / nuke_asset_work etc. for
+# the pattern already started there), then re-add the DCCs you actually
+# use here, one at a time, verifying each resolves before adding the next.
 
-description: Apps and Engines related to Asset based work.
-
-################################################################################
+description: >
+  Apps and Engines related to Asset based work. Currently stubbed out —
+  this studio has no asset pipeline yet. See comment above.
 
 includes:
 - ./includes/frameworks.yml
-- ./includes/settings/tk-desktop2.yml
-- ./includes/settings/tk-3dsmaxplus.yml
-- ./includes/settings/tk-3dsmax.yml
-- ./includes/settings/tk-houdini.yml
-- ./includes/settings/tk-mari.yml
-- ./includes/settings/tk-maya.yml
-- ./includes/settings/tk-motionbuilder.yml
-- ./includes/settings/tk-nuke.yml
-- ./includes/settings/tk-photoshopcc.yml
-- ./includes/settings/tk-aftereffects.yml
-- ./includes/settings/tk-alias.yml
-- ./includes/settings/tk-vred.yml
-- ./includes/settings/tk-shell.yml
-- ./includes/settings/tk-shotgun.yml
-- ./includes/settings/tk-substancepainter.yml
-- ./includes/settings/tk-unreal.yml
 
 ################################################################################
 # configuration for all engines to load in an asset step context
+#
+# Intentionally empty. Add engines here only once their corresponding
+# templates and settings blocks are verified to resolve.
 
 engines:
-  tk-desktop2: "@settings.tk-desktop2.all"
-  tk-3dsmaxplus: "@settings.tk-3dsmaxplus.asset_step"
-  tk-3dsmax: "@settings.tk-3dsmax.asset_step"
-  tk-houdini: "@settings.tk-houdini.asset_step"
-  tk-mari: "@settings.tk-mari.asset_step"
-  tk-maya: "@settings.tk-maya.asset_step"
-  tk-motionbuilder: "@settings.tk-motionbuilder.asset_step"
-  tk-nuke: "@settings.tk-nuke.asset_step"
-  tk-nukestudio: "@settings.tk-nuke.nukestudio.asset_step"
-  tk-photoshopcc: "@settings.tk-photoshopcc.asset_step"
-  tk-aftereffects: "@settings.tk-aftereffects.asset_step"
-  tk-alias: "@settings.tk-alias.asset_step"
-  tk-vred: "@settings.tk-vred.asset_step"
-  tk-shell: "@settings.tk-shell.asset_step"
-  tk-shotgun: "@settings.tk-shotgun.asset_step"
-  tk-substancepainter: "@settings.tk-substancepainter.asset_step"
-  tk-unreal: "@settings.tk-unreal.project"
 
 ################################################################################
 # reference all of the common frameworks

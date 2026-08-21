@@ -37,6 +37,11 @@ keys:
     type: str
   Step:
     type: str
+  Asset:
+    type: str
+  sg_asset_type:
+    type: str
+    alias: AssetType
   ProjectCode:
     type: str
     shotgun_entity_type: Project
@@ -75,6 +80,14 @@ paths:
   # Root of a shot's PUBLISH area — mirrors shot_root under a separate
   # top-level Publish/ tree.
   shot_publish_root: Publish/{ProjectCode}/{Sequence}/{Shot}/{Step}
+
+  # Root of an asset's WORK area. Mirrors shot_root's pattern, under a
+  # separate Assets/ branch. Minimal — added to satisfy references from
+  # NFA's asset_step environment, not yet a fully designed asset pipeline.
+  asset_root: Artists/{ProjectCode}/Assets/{sg_asset_type}/{Asset}/{Step}
+
+  # Root of an asset's PUBLISH area.
+  asset_publish_root: Publish/{ProjectCode}/Assets/{sg_asset_type}/{Asset}/{Step}
 
   ##########################################################################################
   # Nuke — shot level
@@ -118,6 +131,35 @@ paths:
   # Review MOV output.
   nuke_shot_render_movie:
     definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
+
+  ##########################################################################################
+  # Nuke — asset level (minimal, added to satisfy NFA's asset_step environment
+  # references; not yet a fully designed asset pipeline)
+  #
+
+  asset_work_area_nuke:
+    definition: "@asset_root/Nuke/{Step}"
+
+  nuke_asset_work:
+    definition: "@asset_root/Nuke/{Step}/{Asset}_{Step}_v{version}.nk"
+
+  nuke_asset_snapshot:
+    definition: "@asset_root/Nuke/{Step}/snapshots/{Asset}_{Step}_v{version}_{timestamp}.nk"
+
+  asset_publish_area_nuke:
+    definition: "@asset_publish_root/Nuke/{Step}"
+
+  nuke_asset_publish:
+    definition: "@asset_publish_root/Nuke/{Step}/{Asset}_{Step}_v{version}.nk"
+
+  nuke_asset_render:
+    definition: "@asset_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+
+  nuke_asset_render_pub:
+    definition: "@asset_publish_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+
+  nuke_asset_render_movie:
+    definition: "@asset_root/Nuke/{Step}/previews/{Asset}_{Step}_{name}_v{version}.mov"
 
 strings:
   # Version entity name shown in ShotGrid when Publish2 creates a review Version.

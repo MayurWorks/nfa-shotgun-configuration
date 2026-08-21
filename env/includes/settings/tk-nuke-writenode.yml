@@ -1,14 +1,74 @@
-# Studio tk-nuke-writenode settings.
-# Adapted from NFA's config — trimmed to a single "main" EXR write node
-# category per the studio's decision to skip prerender/mattepainting
-# categories for now. Colorspace uses this studio's OCIO config (aces_1.2,
-# working space ACEScg) instead of NFA's ACES2065-1.
-
-includes:
-    - ../app_locations.yml
+# Copyright (c) 2017 Shotgun Software Inc.
+#
+# CONFIDENTIAL AND PROPRIETARY
+#
+# This work is provided "AS IS" and subject to the Shotgun Pipeline Toolkit
+# Source Code License included in this distribution package. See LICENSE.
+# By accessing, using, copying or modifying this work you indicate your
+# agreement to the Shotgun Pipeline Toolkit Source Code License. All rights
+# not expressly granted therein are reserved by Shotgun Software Inc.
 
 ################################################################################
 
+includes:
+- ../app_locations.yml
+
+################################################################################
+
+# asset
+settings.tk-nuke-writenode.asset:
+  template_script_work: nuke_asset_work
+  categories:
+    - category_name: main
+      write_nodes:
+          - name: exr (dwaa 16bit)
+            file_type: exr
+            render_template: nuke_asset_render
+            publish_template: nuke_asset_render_pub
+            tile_color: 4292673791
+            settings:
+              colorspace: ACES - ACES2065-1
+              datatype: 16 bit half
+              channels: rgb
+              compression: DWAA
+
+    - category_name: prerender
+      default_category: True
+      write_nodes:
+        - name: exr (dwaa 16bit)
+          file_type: exr
+          render_template: nuke_asset_render
+          publish_template: nuke_asset_render_pub
+          tile_color: 2365546239
+          settings:
+            colorspace: scene_linear
+            datatype: 16 bit half
+            channels: rgba
+            compression: DWAA
+        - name: exr (zip 16bit)
+          file_type: exr
+          render_template: nuke_asset_render
+          publish_template: nuke_asset_render_pub
+          tile_color: 2365546239
+          settings:
+            colorspace: scene_linear
+            datatype: 16 bit half
+            channels: rgba
+            compression: Zip (1 scanline)
+        - name: exr (zip 32bit)
+          file_type: exr
+          render_template: nuke_asset_render
+          publish_template: nuke_asset_render_pub
+          tile_color: 2365546239
+          settings:
+            colorspace: scene_linear
+            datatype: 32 bit float
+            channels: rgba
+            compression: Zip (1 scanline)
+
+  location: "@apps.tk-nuke-writenode.location"
+
+# shot
 settings.tk-nuke-writenode.shot:
   template_script_work: nuke_shot_work
   categories:
