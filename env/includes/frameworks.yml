@@ -33,11 +33,19 @@ frameworks:
       name: tk-framework-aliastranslations
       version: v0.2.2
   # desktopserver - provides a server to run local commands.
+  #
+  # Bumped from v1.5.3 to v1.8.7 to fix:
+  # "No module named 'tank_vendor.six.moves'" on Python 3.13 (same root
+  # cause as the tk-core bump earlier in core/core_api.yml, but this is a
+  # separate package with its own bundled tank_vendor.six usage).
+  # v1.8.7 confirmed working: an earlier ShotGrid Desktop session in this
+  # environment successfully loaded tk-framework-desktopserver v1.8.7
+  # before this pin was set, with no import error.
   tk-framework-desktopserver_v1.x.x:
     location:
       type: app_store
       name: tk-framework-desktopserver
-      version: v1.5.3
+      version: v1.8.7
   # qtwidgets - collection of Toolkit related QT Widgets
   tk-framework-qtwidgets_v2.x.x:
     location:
