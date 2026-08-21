@@ -93,16 +93,31 @@ paths:
   #
   # These don't require the standard formatting (with definition and root_name) because they
   # will be set within each template that uses the alias.
-  asset_root: 03_workfiles/assets/{Asset}/{Step}
-  shot_root: 03_workfiles/shots/{Sequence}/{Shot}/{Step}
+  #
+  # NOTE: these match the studio's Artists/Projects convention (see
+  # core/templates/tk-nuke.yml), NOT NFA's original 03_workfiles/04_publish/
+  # 05_renders tree -- that tree and its schema folders were removed. Every
+  # other DCC template file (tk-3dsmax, tk-aftereffects, tk-houdini, tk-maya,
+  # tk-motionbuilder, tk-photoshopcc, tk-substancepainter, tk-unreal) resolves
+  # @shot_root/@asset_root from here, so these must stay in sync with
+  # tk-nuke.yml's shot_root/asset_root/shot_publish_root/asset_publish_root
+  # definitions -- do not let tk-nuke.yml redefine these keys locally again.
+  asset_root: Artists/{Projectcode}/Assets/{sg_asset_type}/{Asset}/{Step}
+  shot_root: Artists/{Projectcode}/{Sequence}/{Shot}/{Step}
 
-  sequence_root: 03_workfiles/shots/{Sequence}
+  sequence_root: Artists/{Projectcode}/{Sequence}
 
-  asset_publish: 04_publish/assets/{Asset}/{Step}
-  shot_publish: 04_publish/shots/{Sequence}/{Shot}/{Step}
+  asset_publish: Publish/{Projectcode}/Assets/{sg_asset_type}/{Asset}/{Step}
+  shot_publish: Publish/{Projectcode}/{Sequence}/{Shot}/{Step}
 
-  asset_render_publish: 05_renders/assets/{Asset}/{Step}
-  shot_render_publish: 05_renders/shots/{Sequence}/{Shot}/{Step}
+  # No separate top-level 05_renders tree -- renders live under a renders/
+  # subfolder of the publish root instead (matches tk-nuke.yml's own
+  # @shot_publish_root/{Step}/renders/... pattern). Must resolve to a path
+  # DISTINCT from @shot_publish/@asset_publish themselves -- Toolkit rejects
+  # two template names that resolve to the identical (root, path), even when
+  # one is only reached through another alias.
+  asset_render_publish: "@asset_publish/renders"
+  shot_render_publish: "@shot_publish/renders"
 
 
   ##########################################################################################

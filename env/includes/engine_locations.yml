@@ -38,10 +38,20 @@ engines.tk-alias.location:
   version: v2.1.7
 
 # Desktop
+#
+# Bumped from v2.6.4 to v2.8.5 to fix:
+# "No module named 'tank_vendor.six.moves'" on Python 3.13. This is the
+# same bug class as the core/core_api.yml and frameworks.yml fixes above,
+# but in tk-desktop's own vendored python/tk_desktop/rpc.py rather than
+# tk-core or tk-framework-desktopserver -- bumping those two did not
+# cover this one, since it's a separate bundle with its own old pin.
+# v2.8.5 also matches the ShotGrid Desktop app version already installed
+# locally (confirmed via /opt/Shotgun/.../app_store/tk-desktop/v2.8.5 in
+# a prior successful launch log), so no new incompatibility is expected.
 engines.tk-desktop.location:
   type: app_store
   name: tk-desktop
-  version: v2.6.4
+  version: v2.8.5
 
 # Desktop2
 engines.tk-desktop2.location:

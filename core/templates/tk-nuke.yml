@@ -6,22 +6,23 @@
 # Artists/, Publish/, and Projects/ are all subfolders under this one root.
 #
 # Work folder structure:
-#   Artists/<ProjectCode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   Artists/<Projectcode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
 #   e.g. Artists/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
 # Publish folder structure (mirrors Artists/, own top-level tree):
-#   Publish/<ProjectCode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   Publish/<Projectcode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
 #   e.g. Publish/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
 # Plates:
-#   Projects/<ProjectCode>/Plates/<Sequence>/<Shot>/
+#   Projects/<Projectcode>/Plates/<Sequence>/<Shot>/
 #   e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
 #
 # Notes:
 # - {Shot} is the FULL composite shot code as stored in ShotGrid (e.g. STRM_E2_0010),
 #   already encoding project code + sequence + shot number. It is NOT decomposed.
 # - {Sequence} is the episode/sequence folder (e.g. EP_2), kept separate from {Shot}.
-# - {ProjectCode} is the short project code folder directly under Artists/ (e.g. STRM).
+# - {Projectcode} is the short project code folder directly under Artists/ (e.g. STRM) —
+#   this key is defined once in common.yml (shared by every DCC template), not here.
 # - Work and Publish ARE separated as two top-level trees. Toolkit requires every
 #   template's resolved path to be unique (root_name, definition) — aliasing a
 #   publish template to the exact same path as its work template is rejected at
@@ -42,10 +43,6 @@ keys:
   sg_asset_type:
     type: str
     alias: AssetType
-  ProjectCode:
-    type: str
-    shotgun_entity_type: Project
-    shotgun_field_name: sg_projectcode
   ProjectName:
     type: str
     shotgun_entity_type: Project
@@ -73,21 +70,16 @@ paths:
   nuke_template_file:
     definition: "00_pipeline/nuke/template/StudioTemplate.nk"
 
-  # Root of a shot's WORK area. No explicit root_name -> uses the
-  # default "primary" storage root.
-  shot_root: Artists/{ProjectCode}/{Sequence}/{Shot}/{Step}
-
-  # Root of a shot's PUBLISH area — mirrors shot_root under a separate
-  # top-level Publish/ tree.
-  shot_publish_root: Publish/{ProjectCode}/{Sequence}/{Shot}/{Step}
-
-  # Root of an asset's WORK area. Mirrors shot_root's pattern, under a
-  # separate Assets/ branch. Minimal — added to satisfy references from
-  # NFA's asset_step environment, not yet a fully designed asset pipeline.
-  asset_root: Artists/{ProjectCode}/Assets/{sg_asset_type}/{Asset}/{Step}
-
-  # Root of an asset's PUBLISH area.
-  asset_publish_root: Publish/{ProjectCode}/Assets/{sg_asset_type}/{Asset}/{Step}
+  # shot_root / asset_root are defined ONCE, in core/templates/common.yml,
+  # and aliased here rather than redefined -- common.yml is shared by every
+  # DCC template file (tk-3dsmax, tk-aftereffects, tk-houdini, tk-maya,
+  # tk-motionbuilder, tk-photoshopcc, tk-substancepainter, tk-unreal all
+  # reference @shot_root/@asset_root too), so a local redefinition here
+  # would silently diverge from what those other DCCs resolve to, or fail
+  # config load outright as a duplicate template name. See common.yml's
+  # comment above asset_root/shot_root for the actual path definitions.
+  shot_publish_root: "@shot_publish"
+  asset_publish_root: "@asset_publish"
 
   ##########################################################################################
   # Nuke — shot level
@@ -118,7 +110,7 @@ paths:
   # 4-digit frame padding, .exr.
   # e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
   shot_plate:
-    definition: "Projects/{ProjectCode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
+    definition: "Projects/{Projectcode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
 
   # Write node EXR output — WIP renders stay under Artists/ alongside work files.
   nuke_shot_render:
