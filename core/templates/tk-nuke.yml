@@ -3,26 +3,37 @@
 #
 # SINGLE STORAGE ROOT ("primary"), pointing at /jobs/<ProjectName>
 # (configured as a Local Storage entity in ShotGrid Site Preferences).
-# Artists/, Publish/, and Projects/ are all subfolders under this one root.
+# The project-root folder directly under "primary" is named from the
+# ShotGrid Project's tank_name field (a hard Toolkit requirement — see
+# core/schema/project.yml) — set to the project's short code (e.g. STRM)
+# by the project-creator tool. Artists/, Publish/, and Projects/ are all
+# subfolders of THAT project-root folder, not of "primary" directly.
 #
 # Work folder structure:
-#   Artists/<Projectcode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
-#   e.g. Artists/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   e.g. STRM/Artists/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
 # Publish folder structure (mirrors Artists/, own top-level tree):
-#   Publish/<Projectcode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
-#   e.g. Publish/STRM/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#   <tank_name>/Publish/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   e.g. STRM/Publish/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
 # Plates:
-#   Projects/<Projectcode>/Plates/<Sequence>/<Shot>/
-#   e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
+#   <tank_name>/Projects/Plates/<Sequence>/<Shot>/
+#   e.g. STRM/Projects/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
 #
 # Notes:
 # - {Shot} is the FULL composite shot code as stored in ShotGrid (e.g. STRM_E2_0010),
 #   already encoding project code + sequence + shot number. It is NOT decomposed.
 # - {Sequence} is the episode/sequence folder (e.g. EP_2), kept separate from {Shot}.
-# - {Projectcode} is the short project code folder directly under Artists/ (e.g. STRM) —
-#   this key is defined once in common.yml (shared by every DCC template), not here.
+# - There is NO {Projectcode} folder segment under Artists/Publish/Projects — an
+#   earlier version of this file put one there, but that duplicated what tank_name
+#   already provides at the project root and didn't match the actual schema tree
+#   (core/schema/project/), which caused sgtk.from_path to resolve incorrectly
+#   (observed: '/jobs/SlateX/str' instead of the intended Artists/... path) the
+#   first time a real shot-context launch was tested. {Projectcode} (the
+#   sg_projectcode key, defined in common.yml) is still used in some FILENAMES
+#   as a disambiguator (e.g. Deadline batch names, some DCC preview filenames)
+#   — that's unaffected, only the folder-path usage was removed.
 # - Work and Publish ARE separated as two top-level trees. Toolkit requires every
 #   template's resolved path to be unique (root_name, definition) — aliasing a
 #   publish template to the exact same path as its work template is rejected at
@@ -112,7 +123,7 @@ paths:
   # 4-digit frame padding, .exr.
   # e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
   shot_plate:
-    definition: "Projects/{Projectcode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
+    definition: "Projects/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
 
   # Write node EXR output — WIP renders stay under Artists/ alongside work files.
   nuke_shot_render:

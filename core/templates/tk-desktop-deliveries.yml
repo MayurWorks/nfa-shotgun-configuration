@@ -21,8 +21,11 @@
 # SOFTWARE.
 
 paths:
-  # Shot Delivery folder
-  delivery: 05_renders/delivery
+  # Shot Delivery folder — Projects/Delivery, alongside Projects/Plates.
+  # (Previously pointed at NFA's 05_renders/delivery, which was deleted
+  # from core/schema/project/ along with the rest of the old 01_production
+  # –05_renders tree; this was missed in that cleanup pass.)
+  delivery: Projects/Delivery
   # Shot Delivery Path
   shot_delivery:
     definition: "@delivery/{Projectcode}_sc{Sequence}_{Shot}_v{version}/{Projectcode}_sc{Sequence}_{Shot}_v{version}.{SEQ}.exr"

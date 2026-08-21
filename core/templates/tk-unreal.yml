@@ -63,8 +63,12 @@ keys:
 
 paths:
   # level sequence review output from unreal
+  # (Previously hardcoded 05_renders/unreal/shots/..., NFA's deleted tree —
+  # missed in the earlier cleanup pass. Moved onto the studio's Publish/
+  # tree, matching how other DCCs' render-publish outputs live under
+  # Publish/... rather than a separate top-level renders folder.)
   unreal.movie_publish:
-    definition: "05_renders/unreal/shots/[{Sequence}/][{Shot}/]{ue_level_sequence}_{ue_world}.v{version}.{ue_mov_ext}"
+    definition: "Publish/unreal/shots/[{Sequence}/][{Shot}/]{ue_level_sequence}_{ue_world}.v{version}.{ue_mov_ext}"
   unreal_shot_publish:
     definition: "@shot_publish/unreal/{name}_v{version}.nk"
   # The location of FBX exports for Unreal

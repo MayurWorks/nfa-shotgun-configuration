@@ -102,13 +102,26 @@ paths:
   # @shot_root/@asset_root from here, so these must stay in sync with
   # tk-nuke.yml's shot_root/asset_root/shot_publish_root/asset_publish_root
   # definitions -- do not let tk-nuke.yml redefine these keys locally again.
-  asset_root: Artists/{Projectcode}/Assets/{sg_asset_type}/{Asset}/{Step}
-  shot_root: Artists/{Projectcode}/{Sequence}/{Shot}/{Step}
+  # NOTE: no {Projectcode} folder segment here. The schema's project-root
+  # folder (core/schema/project.yml, type: "project") is ALREADY named from
+  # the ShotGrid Project's tank_name field (set to the project code, e.g.
+  # "STRM", by the project-creator tool) -- tank_name is a hard Toolkit
+  # requirement, not something this config can remove or relocate (tk-core
+  # raises TankMissingTankNameError if it's unset, and the project-level
+  # folder in every schema always represents the project this way). Putting
+  # {Projectcode} inside Artists/Publish as well was pure duplication that
+  # didn't match what the schema tree actually builds on disk, and caused
+  # sgtk.from_path to resolve to the wrong location. {Projectcode} still
+  # appears in FILENAMES elsewhere in this file (batch names, mov/usd/obj
+  # names) -- that's an intentional disambiguator, not a folder path, and
+  # is unaffected by this note.
+  asset_root: Artists/Assets/{sg_asset_type}/{Asset}/{Step}
+  shot_root: Artists/{Sequence}/{Shot}/{Step}
 
-  sequence_root: Artists/{Projectcode}/{Sequence}
+  sequence_root: Artists/{Sequence}
 
-  asset_publish: Publish/{Projectcode}/Assets/{sg_asset_type}/{Asset}/{Step}
-  shot_publish: Publish/{Projectcode}/{Sequence}/{Shot}/{Step}
+  asset_publish: Publish/Assets/{sg_asset_type}/{Asset}/{Step}
+  shot_publish: Publish/{Sequence}/{Shot}/{Step}
 
   # No separate top-level 05_renders tree -- renders live under a renders/
   # subfolder of the publish root instead (matches tk-nuke.yml's own

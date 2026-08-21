@@ -25,31 +25,40 @@ keys:
     type: str
 
 paths:
+  # Editorial hiero project files — Projects/Editorial. (Previously pointed
+  # at NFA's 02_source/editorial, which was deleted from core/schema/project/
+  # along with the rest of the old 01_production–05_renders tree; this was
+  # missed in that cleanup pass.)
+  #
   # The location of WIP files
   hiero_project_work:
-    definition: "02_source/editorial/{Projectcode}_{name}_v{version}.hrox"
+    definition: "Projects/Editorial/{Projectcode}_{name}_v{version}.hrox"
   hiero_project_work_area:
-    definition: "02_source/editorial/"
+    definition: "Projects/Editorial/"
   # The location of backups of WIP files
   hiero_project_snapshot:
-    definition: "02_source/editorial/snapshots/{Projectcode}_{name}_v{version}_{timestamp}.hrox"
+    definition: "Projects/Editorial/snapshots/{Projectcode}_{name}_v{version}_{timestamp}.hrox"
   # The location of published hiero files
   hiero_project_publish:
-    definition: "02_source/editorial/publish/{Projectcode}_{name}_v{version}.hrox"
+    definition: "Projects/Editorial/publish/{Projectcode}_{name}_v{version}.hrox"
   hiero_project_publish_area:
-    definition: "02_source/editorial/publish"
+    definition: "Projects/Editorial/publish"
 
   ##########################################################################################
   # Shot level paths
   #
+  # These live under Projects/Plates/ alongside the Nuke shot_plate template
+  # (core/templates/tk-nuke.yml) — Hiero's exports are client-facing source
+  # material like the Nuke plate loader, not artist work, so they belong in
+  # Projects/ rather than Artists/.
 
   # export of shot asset data from hiero
   hiero_plate_path:
-    definition: "02_source/sc{Sequence}/{Shot}/p{version}/plates/ref/{Projectcode}_sc{Sequence}_{Shot}_reference_p{version}.mov"
+    definition: "Projects/Plates/{Sequence}/{Shot}/p{version}/ref/{Projectcode}_sc{Sequence}_{Shot}_reference_p{version}.mov"
   hiero_render_path:
-    definition: "02_source/sc{Sequence}/{Shot}/p{version}/renders/{Projectcode}_sc{Sequence}_{Shot}_v{version}.{SEQ}.exr"
+    definition: "Projects/Plates/{Sequence}/{Shot}/p{version}/renders/{Projectcode}_sc{Sequence}_{Shot}_v{version}.{SEQ}.exr"
   hiero_copy_path:
-    definition: "02_source/sc{Sequence}/{Shot}/p{version}/plates/{fileext}/{Projectcode}_sc{Sequence}_{Shot}_plate_p{version}.{SEQ}.{fileext}"
+    definition: "Projects/Plates/{Sequence}/{Shot}/p{version}/{fileext}/{Projectcode}_sc{Sequence}_{Shot}_plate_p{version}.{SEQ}.{fileext}"
 
 strings:
   # defines how the {tk_version} token in Hiero gets formatted back to tk.
