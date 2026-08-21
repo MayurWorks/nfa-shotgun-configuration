@@ -70,16 +70,18 @@ paths:
   nuke_template_file:
     definition: "00_pipeline/nuke/template/StudioTemplate.nk"
 
-  # shot_root / asset_root are defined ONCE, in core/templates/common.yml,
-  # and aliased here rather than redefined -- common.yml is shared by every
-  # DCC template file (tk-3dsmax, tk-aftereffects, tk-houdini, tk-maya,
-  # tk-motionbuilder, tk-photoshopcc, tk-substancepainter, tk-unreal all
-  # reference @shot_root/@asset_root too), so a local redefinition here
-  # would silently diverge from what those other DCCs resolve to, or fail
-  # config load outright as a duplicate template name. See common.yml's
-  # comment above asset_root/shot_root for the actual path definitions.
-  shot_publish_root: "@shot_publish"
-  asset_publish_root: "@asset_publish"
+  # shot_root / asset_root / shot_publish / asset_publish are defined ONCE,
+  # in core/templates/common.yml, and referenced directly here (@shot_root,
+  # @asset_root, @shot_publish, @asset_publish below) rather than aliased
+  # again under a second name -- common.yml is shared by every DCC template
+  # file (tk-3dsmax, tk-aftereffects, tk-houdini, tk-maya, tk-motionbuilder,
+  # tk-photoshopcc, tk-substancepainter, tk-unreal all reference these too),
+  # so a local redefinition or a same-path second alias here would either
+  # silently diverge from what those other DCCs resolve to, or fail config
+  # load outright as a duplicate template ("shot_publish_root" and
+  # "shot_publish" resolving to the identical Publish/... path was tried
+  # and rejected by Toolkit -- see git history). See common.yml's comment
+  # above asset_root/shot_root for the actual path definitions.
 
   ##########################################################################################
   # Nuke — shot level
@@ -100,10 +102,10 @@ paths:
   # Publish area/file — real, distinct location under Publish/, not an
   # alias of the work template.
   shot_publish_area_nuke:
-    definition: "@shot_publish_root/Nuke/{Step}"
+    definition: "@shot_publish/Nuke/{Step}"
 
   nuke_shot_publish:
-    definition: "@shot_publish_root/Nuke/{Step}/{Shot}_{Step}_v{version}.nk"
+    definition: "@shot_publish/Nuke/{Step}/{Shot}_{Step}_v{version}.nk"
 
   # Plate location — under Projects/ (client-delivered source material),
   # same "primary" root, just a different subfolder than Artists/.
@@ -118,7 +120,7 @@ paths:
 
   # Published EXR output — real, distinct location under Publish/.
   nuke_shot_render_pub:
-    definition: "@shot_publish_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+    definition: "@shot_publish/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
   # Review MOV output.
   nuke_shot_render_movie:
@@ -139,16 +141,16 @@ paths:
     definition: "@asset_root/Nuke/{Step}/snapshots/{Asset}_{Step}_v{version}_{timestamp}.nk"
 
   asset_publish_area_nuke:
-    definition: "@asset_publish_root/Nuke/{Step}"
+    definition: "@asset_publish/Nuke/{Step}"
 
   nuke_asset_publish:
-    definition: "@asset_publish_root/Nuke/{Step}/{Asset}_{Step}_v{version}.nk"
+    definition: "@asset_publish/Nuke/{Step}/{Asset}_{Step}_v{version}.nk"
 
   nuke_asset_render:
     definition: "@asset_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
   nuke_asset_render_pub:
-    definition: "@asset_publish_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+    definition: "@asset_publish/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Asset}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
   nuke_asset_render_movie:
     definition: "@asset_root/Nuke/{Step}/previews/{Asset}_{Step}_{name}_v{version}.mov"
