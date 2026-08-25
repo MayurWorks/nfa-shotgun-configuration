@@ -28,7 +28,7 @@ apps.tk-desktop-deliveries.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-desktop-deliveries.git
-  version: f05594e71dab3045078d508aa24c0b666ddbbe1e
+  version: 24942b733c0c51b7685b41e8821d21f33937c581
 # ---- Multi apps
 
 # startup
