@@ -80,7 +80,7 @@ apps.tk-multi-publish2.location:
 # pythonconsole
 apps.tk-multi-pythonconsole.location:
   type: git_branch
-  branch: main
+  branch: master
   path: https://github.com/MayurWorks/tk-multi-pythonconsole.git
   version: d853ce7d481a49ba6f94a23b830ad6607686c6f2
 
