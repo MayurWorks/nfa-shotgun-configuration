@@ -344,6 +344,7 @@ settings.tk-multi-workfiles2.maya.shot_step:
 
 # asset_step
 settings.tk-multi-workfiles2.nuke.asset_step:
+  hook_scene_operation: default
   template_publish: nuke_asset_publish
   template_publish_area: asset_publish_area_nuke
   template_work: nuke_asset_work
@@ -371,6 +372,7 @@ settings.tk-multi-workfiles2.nuke.asset_step:
 
 # shot_step
 settings.tk-multi-workfiles2.nuke.shot_step:
+  hook_scene_operation: default
   template_publish: nuke_shot_publish
   template_publish_area: shot_publish_area_nuke
   template_work: nuke_shot_work
