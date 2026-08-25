@@ -23,7 +23,7 @@ path.windows.mari: "C:/Program Files/Mari7.0v2/Bundle/bin/Mari7.0v2.exe"
 path.windows.motionbuilder: C:\Program Files\Autodesk\MotionBuilder 2022\bin\x64\motionbuilder.exe
 
 # Hiero
-path.linux.hiero: "Nuke13.2"
+path.linux.hiero: "/apps/linux/2d/foundary/Nuke15.2v1/Nuke15.2"
 path.mac.hiero: "/Applications/Nuke13.2v3/Hiero13.2v3.app"
 path.windows.hiero: C:/Program Files/Nuke15.0v1/Nuke15.0.exe
 
