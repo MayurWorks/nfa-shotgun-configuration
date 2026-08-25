@@ -82,7 +82,7 @@ apps.tk-multi-pythonconsole.location:
   type: git_branch
   branch: master
   path: https://github.com/MayurWorks/tk-multi-pythonconsole.git
-  version: 39c7bcf6009f33aea37b4ded545f05164efb1ddc
+  version: 6fbb89bc1d5442f7a3ce9b7f59a5057e9221560d
 
 # reviewsubmission
 apps.tk-multi-reviewsubmission.location:
