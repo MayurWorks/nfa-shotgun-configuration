@@ -93,11 +93,14 @@ class BeforeAppLaunch(sgtk.Hook):
             ########################################
             """Staging project settings for Nuke to read on startup"""
 
-            # tk_nuke_project_settings.py (Nuke-side init script, run via
-            # NUKE_PATH) reads these env vars in its onScriptLoad/onCreate
-            # callback and applies them to nuke.root(). This hook can only
-            # stage data - it runs before the Nuke process exists, so it
-            # cannot touch nuke.root() itself.
+            # The tk-nuke-projectsettings Toolkit app (registered on
+            # settings.tk-nuke.shot_step) does a live ShotGrid query and
+            # applies fps/frame range to nuke.root() via addOnCreate/
+            # addOnScriptLoad callbacks - that's the primary mechanism.
+            # This hook only stages the same values as env vars, used by
+            # that app as a fallback if its live query fails. It runs
+            # before the Nuke process exists, so it cannot touch
+            # nuke.root() itself.
 
             project_fields = sg.find_one(
                 "Project",

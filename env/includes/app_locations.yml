@@ -284,7 +284,7 @@ apps.tk-nuke-projectsettings.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
-  version: HEAD
+  version: d149f5b8968d688fa2337ce2a345f96a6c3e20bd
 
 apps.tk-nuke-versiondropper.location:
   type: github_release
