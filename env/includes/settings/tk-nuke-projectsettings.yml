@@ -1,0 +1,7 @@
+includes:
+  - ../app_locations.yml
+
+################################################################################
+
+settings.tk-nuke-projectsettings.shot_step:
+  location: "@apps.tk-nuke-projectsettings.location"

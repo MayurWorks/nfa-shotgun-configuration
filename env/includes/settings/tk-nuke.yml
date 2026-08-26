@@ -26,6 +26,7 @@ includes:
 - ./tk-multi-workfiles2.yml
 - ./tk-nuke-writenode.yml
 - ./tk-nuke-template.yml
+- ./tk-nuke-projectsettings.yml
 
 ################################################################################
 # Hiero
@@ -201,6 +202,7 @@ settings.tk-nuke.shot_step:
       location: "@apps.tk-nuke-quickreview.location"
     tk-nuke-template: "@settings.tk-nuke-template.shot_step"
     tk-nuke-writenode: "@settings.tk-nuke-writenode.shot"
+    tk-nuke-projectsettings: "@settings.tk-nuke-projectsettings.shot_step"
   menu_favourites:
   - {app_instance: tk-multi-workfiles2, name: File Open...}
   - {app_instance: tk-multi-snapshot, name: Snapshot...}

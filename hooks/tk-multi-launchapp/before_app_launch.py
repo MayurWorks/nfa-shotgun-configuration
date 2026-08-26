@@ -88,3 +88,58 @@ class BeforeAppLaunch(sgtk.Hook):
             sgtk.util.append_path_to_env_var("HOUDINI_OTLSCAN_PATH", otls_path)
 
             self.parent.log_info("Added otlscan path %s" % otls_path)
+
+        if engine_name == "tk-nuke":
+            ########################################
+            """Staging project settings for Nuke to read on startup"""
+
+            # tk_nuke_project_settings.py (Nuke-side init script, run via
+            # NUKE_PATH) reads these env vars in its onScriptLoad/onCreate
+            # callback and applies them to nuke.root(). This hook can only
+            # stage data - it runs before the Nuke process exists, so it
+            # cannot touch nuke.root() itself.
+
+            project_fields = sg.find_one(
+                "Project",
+                [["name", "is", project_name]],
+                ["sg_fps", "sg_render_engine"],
+            )
+
+            fps = project_fields.get("sg_fps") if project_fields else None
+            if fps is not None:
+                self.parent.log_info("Set NFA_PROJECT_FPS environment to %s" % fps)
+                os.environ["NFA_PROJECT_FPS"] = str(fps)
+            else:
+                self.parent.log_info("No sg_fps set on ShotGrid project")
+
+            render_engine = (
+                project_fields.get("sg_render_engine") if project_fields else None
+            )
+            if render_engine is not None:
+                self.parent.log_info(
+                    "Set RENDER_ENGINE environment to %s" % render_engine
+                )
+                os.environ["RENDER_ENGINE"] = render_engine
+            else:
+                self.parent.log_info("No render engine entity set in ShotGrid project")
+
+            # Shot frame range, only meaningful when context is a Shot
+            if current_context.entity and current_context.entity["type"] == "Shot":
+                shot_fields = sg.find_one(
+                    "Shot",
+                    [["id", "is", current_context.entity["id"]]],
+                    ["sg_cut_in", "sg_cut_out"],
+                )
+                cut_in = shot_fields.get("sg_cut_in") if shot_fields else None
+                cut_out = shot_fields.get("sg_cut_out") if shot_fields else None
+                if cut_in is not None and cut_out is not None:
+                    os.environ["NFA_SHOT_CUT_IN"] = str(cut_in)
+                    os.environ["NFA_SHOT_CUT_OUT"] = str(cut_out)
+                    self.parent.log_info(
+                        "Set NFA_SHOT_CUT_IN/OUT environment to %s/%s"
+                        % (cut_in, cut_out)
+                    )
+                else:
+                    self.parent.log_info(
+                        "Shot is missing sg_cut_in/sg_cut_out, skipping frame range env"
+                    )

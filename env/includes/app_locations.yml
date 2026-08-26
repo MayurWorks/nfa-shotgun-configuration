@@ -277,6 +277,15 @@ apps.tk-nuke-template.location:
   repository: tk-nuke-template
   version: 0.2.0
 
+# project settings (fps/frame range auto-apply) - studio-local, not an
+# NFA app-store release, so pinned to a branch on our own repo instead
+# of a github_release like the apps above.
+apps.tk-nuke-projectsettings.location:
+  type: git_branch
+  branch: main
+  path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
+  version: HEAD
+
 apps.tk-nuke-versiondropper.location:
   type: github_release
   organization: nfa-vfxim
