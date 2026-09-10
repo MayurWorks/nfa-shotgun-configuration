@@ -272,10 +272,21 @@ apps.tk-nuke-writenode.location:
 
 # template
 apps.tk-nuke-template.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-nuke-template
-  version: 0.2.0
+  # Pointed at our fork (not nfa-vfxim's upstream github_release) because
+  # generate_template() has a studio patch: it explicitly calls
+  # tk-nuke-projectsettings.apply_settings() once the template has been
+  # pasted in and the script is in its final state. See
+  # tk-nuke-projectsettings.location below for why git_branch is used
+  # instead of github_release - same reasoning applies here.
+  #
+  # IMPORTANT: after pushing to MayurWorks/tk-nuke-template's main
+  # branch, replace the version SHA below with the new commit hash -
+  # git_branch pins to a specific commit for reproducibility, it does
+  # NOT float to whatever is currently on the branch tip.
+  type: git_branch
+  branch: main
+  path: https://github.com/MayurWorks/tk-nuke-template.git
+  version: c05f8aeaeaf47015cc60b522191360a0965387ab
 
 # project settings (fps/frame range auto-apply) - studio-local, not an
 # NFA app-store release, so pinned to a branch on our own repo instead
@@ -284,7 +295,7 @@ apps.tk-nuke-projectsettings.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
-  version: 901d1a2fa3ab6d2c07f20c1cf9899989780cbfa8
+  version: 97790c2187cc64689afbd5a01843f096664a6680
 
 apps.tk-nuke-versiondropper.location:
   type: github_release
