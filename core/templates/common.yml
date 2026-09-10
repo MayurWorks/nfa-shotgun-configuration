@@ -28,6 +28,8 @@
 keys:
   Sequence:
     type: str
+    shotgun_entity_type: Shot
+    shotgun_field_name: sg_sequence
   Shot:
     type: str
   Step:
