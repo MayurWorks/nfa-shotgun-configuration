@@ -59,7 +59,18 @@ settings.tk-multi-workfiles2: &settings_tk-multi-workfiles2
     - ['task_assignees', 'is', '{context.user}']
 
 # launches at startup.
+#
+# NOTE: this block is what env/project.yml's "@settings.tk-multi-workfiles2"
+# reference resolves to for the Nuke engine at PROJECT scope (before a
+# Shot/Asset context has been picked) - it is a SEPARATE tk-multi-workfiles2
+# app instance from the one configured under nuke.shot_step /
+# nuke.asset_step below. Without hook_scene_operation set here too, this
+# instance falls through to tk-multi-workfiles2's own bundled default hook
+# ({self}/scene_operation_tk-nuke.py), bypassing our
+# tk-nuke-projectsettings save-time trigger entirely for any Save action
+# handled by this project-scoped instance.
 settings.tk-multi-workfiles2.launch_at_startup:
+  hook_scene_operation: "{config}/tk-multi-workfiles2/scene_operation_tk-nuke.py"
   launch_at_startup: true
   entities:
     - caption: Assets
