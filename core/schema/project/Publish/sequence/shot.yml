@@ -1,0 +1,11 @@
+# the type of dynamic content
+type: "shotgun_entity"
+
+# the shotgun field to use for the folder name
+name: "code"
+
+# the shotgun entity type to connect to
+entity_type: "Shot"
+
+# shotgun filters to apply when getting the list of items
+filters: [ { "path": "sg_sequence", "relation": "is", "values": [ "$sequence" ] } ]

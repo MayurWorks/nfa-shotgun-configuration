@@ -1,0 +1,10 @@
+# Inner step-named folder (e.g. Comp/Nuke/Comp/), matching the studio's
+# confirmed convention where the pipeline step name is repeated here.
+# Deferred: only created when Nuke actually launches for this context,
+# not eagerly when the Shot/Task is created.
+
+type: "shotgun_step"
+
+name: "short_name"
+
+defer_creation: "tk-nuke"

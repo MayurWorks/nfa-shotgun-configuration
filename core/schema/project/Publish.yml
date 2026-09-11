@@ -1,0 +1,19 @@
+# Static folder — always literally named "Publish".
+# Holds all published (approved/versioned-up) output for this project,
+# mirroring the Artists/ tree structure (sequence/shot/step) but as a
+# distinct, separate location — see common.yml's shot_publish alias and
+# tk-nuke.yml's shot_publish_area_nuke and friends.
+#
+# This tree exists so that Sequence/Shot/Step folders actually get
+# created on disk and registered in the path cache for the Publish
+# area, the same way they do under Artists/. Without this, any
+# template rooted at @shot_publish (shot_publish_area_nuke,
+# nuke_shot_publish, nuke_shot_render_pub, etc.) has no path-cache
+# entries to resolve Sequence/Shot/Step from via
+# Context._fields_from_entity_paths(), regardless of the
+# shotgun_entity_type/shotgun_field_name fallback on the Sequence key
+# in common.yml — that fallback only ever covers Sequence, since Shot
+# and Step are the context's own primary entity/step and are resolved
+# purely from the path cache, not from a Shotgun query.
+
+type: "static"
