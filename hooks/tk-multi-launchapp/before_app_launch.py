@@ -25,6 +25,16 @@ class BeforeAppLaunch(sgtk.Hook):
     """
 
     def execute(self, app_path, app_args, version, engine_name, **kwargs):
+        # TEMP DIAGNOSTIC - confirms whether this hook fires at all on
+        # launch, and with what context, before anything else runs.
+        # Logged at error level so it can't be missed or filtered out.
+        # Remove once before_app_launch.py firing is confirmed.
+        self.parent.log_error(
+            "DIAGNOSTIC: before_app_launch.py execute() called - "
+            "engine_name=%s app_path=%s context=%s"
+            % (engine_name, app_path, self.parent.context)
+        )
+
         # Get ShotGrid connection
         sg = shotgun.get_sg_connection()
 
