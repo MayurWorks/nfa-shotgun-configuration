@@ -39,6 +39,36 @@ class BeforeAppLaunch(sgtk.Hook):
         # Get core
         tk = sgtk.sgtk_from_path(primary_location)
 
+        # Ensure folders exist for the current Task before the app launches.
+        # This is what tk-multi-launchapp is meant to guarantee (see
+        # https://developers.shotgridsoftware.com file-system-config-reference:
+        # "Toolkit ensures that folders exist prior to launching [the app]").
+        # Without this call nothing in this hook actually creates folders, so
+        # any template rooted somewhere Toolkit hasn't built yet (e.g. the
+        # Publish/ tree) has no path-cache entries and apps depending on it
+        # (tk-multi-workfiles2) fail to load. Passing engine_name triggers
+        # the deferred pass too, e.g. step/Nuke/step.yml's
+        # defer_creation: "tk-nuke".
+        task_entity = current_context.task
+        if task_entity is not None:
+            try:
+                tk.create_filesystem_structure(
+                    "Task", task_entity["id"], engine=engine_name
+                )
+                self.parent.log_info(
+                    "Ensured folders exist for Task %s (engine=%s)"
+                    % (task_entity["id"], engine_name)
+                )
+            except Exception as e:
+                self.parent.log_error(
+                    "Failed to create filesystem structure for Task %s: %s"
+                    % (task_entity["id"], e)
+                )
+        else:
+            self.parent.log_info(
+                "No Task in current context, skipping folder creation"
+            )
+
         # Get OCIO path
         ocio_template = tk.templates["ocio_config"]
         ocio_path = ocio_template.apply_fields(current_context).replace(os.sep, '/')
