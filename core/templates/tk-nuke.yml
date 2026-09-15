@@ -3,37 +3,49 @@
 #
 # SINGLE STORAGE ROOT ("primary"), pointing at /jobs/<ProjectName>
 # (configured as a Local Storage entity in ShotGrid Site Preferences).
-# The project-root folder directly under "primary" is named from the
-# ShotGrid Project's tank_name field (a hard Toolkit requirement — see
-# core/schema/project.yml) — set to the project's short code (e.g. STRM)
-# by the project-creator tool. Artists/, Publish/, and Projects/ are all
-# subfolders of THAT project-root folder, not of "primary" directly.
+#
+# "Artists" and "Projects" are their OWN top-level schema "project" nodes
+# (core/schema/Artists.yml, core/schema/Projects.yml) — siblings of the
+# tank_name-rooted core/schema/project.yml tree, not children of it. Each
+# resolves directly under "primary" with no tank_name segment in front of
+# it, and the project's short code (sg_projectcode, e.g. "str") appears as
+# a folder immediately INSIDE Artists/Projects instead (see
+# core/schema/Artists/sg_projectcode.yml, core/schema/Projects/
+# sg_projectcode.yml). tank_name (still a hard Toolkit requirement for the
+# separate core/schema/project.yml node) is only used today for 00_pipeline/
+# and Publish/ — see core/schema/project/.
 #
 # Work folder structure:
-#   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
-#   e.g. STRM/Artists/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#   Artists/<Projectcode>/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
+#   e.g. Artists/str/EP_2/STRM_E2_0010/RTO/Nuke/RTO/
 #
-# Publish folder structure (mirrors Artists/, own top-level tree):
+# Publish folder structure (still resolves under the tank_name project
+# root, unaffected by this convention — see core/schema/project/Publish):
 #   <tank_name>/Publish/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
-#   e.g. STRM/Publish/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#   e.g. str/Publish/EP_2/STRM_E2_0010/RTO/Nuke/RTO/
 #
 # Plates:
-#   <tank_name>/Projects/Plates/<Sequence>/<Shot>/
-#   e.g. STRM/Projects/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
+#   Projects/<Projectcode>/Plates/<Sequence>/<Shot>/
+#   e.g. Projects/str/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
 #
 # Notes:
 # - {Shot} is the FULL composite shot code as stored in ShotGrid (e.g. STRM_E2_0010),
 #   already encoding project code + sequence + shot number. It is NOT decomposed.
 # - {Sequence} is the episode/sequence folder (e.g. EP_2), kept separate from {Shot}.
-# - There is NO {Projectcode} folder segment under Artists/Publish/Projects — an
-#   earlier version of this file put one there, but that duplicated what tank_name
-#   already provides at the project root and didn't match the actual schema tree
-#   (core/schema/project/), which caused sgtk.from_path to resolve incorrectly
-#   (observed: '/jobs/SlateX/str' instead of the intended Artists/... path) the
-#   first time a real shot-context launch was tested. {Projectcode} (the
-#   sg_projectcode key, defined in common.yml) is still used in some FILENAMES
-#   as a disambiguator (e.g. Deadline batch names, some DCC preview filenames)
-#   — that's unaffected, only the folder-path usage was removed.
+# - {Projectcode} (the sg_projectcode key, defined in common.yml) DOES now appear
+#   as a folder-path segment under Artists/ and Projects/ (see common.yml's
+#   asset_root/shot_root/sequence_root) — this is a deliberate change from an
+#   earlier revision of this file, which removed {Projectcode} from folder paths
+#   entirely because it duplicated tank_name at the project root. That removal
+#   is why the pipeline was, until this fix, resolving to
+#   /jobs/SlateX/<tank_name>/Artists/... instead of the required
+#   /jobs/SlateX/Artists/<Projectcode>/.... Now that Artists/Projects are their
+#   own schema roots (not children of the tank_name node), {Projectcode} is the
+#   only thing that identifies which project's folder this is, so it is
+#   required here — this is not the same duplication that was removed before.
+#   {Projectcode} is still additionally used in some FILENAMES as a
+#   disambiguator (e.g. Deadline batch names, some DCC preview filenames) —
+#   that usage is separate and unaffected.
 # - Work and Publish ARE separated as two top-level trees. Toolkit requires every
 #   template's resolved path to be unique (root_name, definition) — aliasing a
 #   publish template to the exact same path as its work template is rejected at
@@ -119,11 +131,14 @@ paths:
     definition: "@shot_publish/Nuke/{Step}/{Shot}_{Step}_v{version}.nk"
 
   # Plate location — under Projects/ (client-delivered source material),
-  # same "primary" root, just a different subfolder than Artists/.
+  # its own top-level schema root (core/schema/Projects.yml), just a
+  # different physical root than Artists/. {Projectcode} is required here
+  # (see comment near the top of this file) since Projects/ no longer sits
+  # under the tank_name-named project folder that used to disambiguate it.
   # 4-digit frame padding, .exr.
-  # e.g. Projects/STRM/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
+  # e.g. Projects/str/Plates/EP_2/STRM_E2_0010/STRM_E2_0010.1001.exr
   shot_plate:
-    definition: "Projects/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
+    definition: "Projects/{Projectcode}/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
 
   # Write node EXR output — WIP renders stay under Artists/ alongside work files.
   nuke_shot_render:

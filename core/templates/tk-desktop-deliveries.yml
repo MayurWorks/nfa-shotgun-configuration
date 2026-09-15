@@ -21,11 +21,18 @@
 # SOFTWARE.
 
 paths:
-  # Shot Delivery folder — Projects/Delivery, alongside Projects/Plates.
-  # (Previously pointed at NFA's 05_renders/delivery, which was deleted
-  # from core/schema/project/ along with the rest of the old 01_production
-  # –05_renders tree; this was missed in that cleanup pass.)
-  delivery: Projects/Delivery
+  # Shot Delivery folder — Projects/{Projectcode}/Delivery, alongside
+  # Projects/{Projectcode}/Plates. (Previously pointed at NFA's
+  # 05_renders/delivery, which was deleted from core/schema/project/ along
+  # with the rest of the old 01_production–05_renders tree; this was missed
+  # in that cleanup pass.) {Projectcode} folder segment added for the same
+  # reason as shot_plate/hiero_* in tk-nuke.yml/tk-hiero.yml — Projects/ is
+  # its own top-level schema root (core/schema/Projects.yml) with no
+  # tank_name segment above it, so {Projectcode} is what identifies the
+  # project. See core/schema/Projects/Delivery.yml (added alongside this
+  # fix) for the actual folder-creation schema entry this template now
+  # requires — Delivery/ previously had no schema backing at all.
+  delivery: Projects/{Projectcode}/Delivery
   # Shot Delivery Path
   shot_delivery:
     definition: "@delivery/{Projectcode}_sc{Sequence}_{Shot}_v{version}/{Projectcode}_sc{Sequence}_{Shot}_v{version}.{SEQ}.exr"

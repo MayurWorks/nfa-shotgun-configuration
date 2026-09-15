@@ -1,0 +1,18 @@
+# Top-level project-root node for the "Projects" tree (client-delivered
+# source material, e.g. ingested plates and Editorial hiero files).
+#
+# Sibling of core/schema/project and core/schema/Artists -- see
+# Artists.yml's comment for the full explanation of why this is a
+# separate "project" node instead of a folder nested under tank_name.
+# This is what lets "Projects" resolve directly under the storage root
+# (/jobs/SlateX/Projects/...) with no {tank_name} segment in front of
+# it. The project-code folder is provided explicitly by the
+# {sg_projectcode}-driven folder immediately inside this node (see
+# sg_projectcode.yml alongside this comment's sibling files), giving
+# /jobs/SlateX/Projects/{sg_projectcode}/Plates/... (e.g.
+# .../Projects/str/Plates/EP_2/STRM_E2_0010/...).
+
+type: "project"
+
+# name of project root as defined in roots.yml / Local Storage "primary"
+root_name: "primary"

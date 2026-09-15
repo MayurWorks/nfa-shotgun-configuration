@@ -1,0 +1,26 @@
+# Dynamic folder named after the current ShotGrid Project's sg_projectcode
+# field (e.g. "str"). This folder is what makes the resolved path
+# /jobs/SlateX/Artists/{sg_projectcode}/... -- it sits directly under the
+# new Artists "project" root (see ../Artists.yml), one level above where
+# {Sequence}/{Shot}/{Step}/Nuke used to attach directly under tank_name's
+# Artists/ folder.
+#
+# type: "shotgun_entity" against the Project entity itself (not Shot or
+# any child entity) -- $project here resolves to the Project this
+# "project"-type schema node's own context belongs to, exactly the same
+# $project token used elsewhere in this schema (e.g.
+# Artists/sequence.yml's own $project filter), since a folder of type
+# "project" is itself associated with exactly one ShotGrid Project.
+
+type: "shotgun_entity"
+
+# the shotgun field to use for the folder name
+name: "sg_projectcode"
+
+# the shotgun entity type to connect to
+entity_type: "Project"
+
+# shotgun filters to apply when getting the list of items -- this node's
+# own project is the only "Project" that should ever produce a folder
+# here, matched by id.
+filters: [ { "path": "id", "relation": "is", "values": [ "$project" ] } ]

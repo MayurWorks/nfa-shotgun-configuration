@@ -1,0 +1,7 @@
+# Static folder — always literally named "Delivery".
+# Backs core/templates/tk-desktop-deliveries.yml's "delivery" template
+# (Projects/{Projectcode}/Delivery) — this schema entry did not exist
+# before this fix, so Delivery/ was never actually created on disk by
+# Toolkit's folder creation even though the template pointed at it.
+
+type: "static"

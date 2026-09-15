@@ -1,0 +1,12 @@
+# Dynamic folder named after the current ShotGrid Project's sg_projectcode
+# field (e.g. "str"). Mirrors ../Artists/sg_projectcode.yml -- see that
+# file's comment for the full explanation. This is what makes the
+# resolved path /jobs/SlateX/Projects/{sg_projectcode}/Plates/...
+
+type: "shotgun_entity"
+
+name: "sg_projectcode"
+
+entity_type: "Project"
+
+filters: [ { "path": "id", "relation": "is", "values": [ "$project" ] } ]
