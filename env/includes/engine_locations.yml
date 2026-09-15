@@ -93,11 +93,19 @@ engines.tk-motionbuilder.location:
   version: v0.6.4
 
 # Nuke
+# Forked from nfa-vfxim/tk-nuke (was pinned to github_release 0.14.6.1) to
+# add automatic Task folder creation in pre_app_init() -- see commit
+# "Ensure Task folders exist at earliest point of engine pre_app_init".
+# tk-multi-launchapp's before_app_launch hook was confirmed via diagnostic
+# logging to never fire for this site's Desktop launch path, so this
+# engine-level fix is used instead. git_branch (not github_release) so
+# pushes to main take effect without needing a new tagged release, matching
+# nfa-shotgun-configuration / tk-nuke-projectsettings / tk-nuke-template.
 engines.tk-nuke.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-nuke
-  version: 0.14.6.1
+  type: git_branch
+  branch: main
+  path: https://github.com/MayurWorks/tk-nuke.git
+  version: 62091b07901df4bb88066caf02f6f18ad707ab1f
 
 # Photoshop
 engines.tk-photoshopcc.location:
