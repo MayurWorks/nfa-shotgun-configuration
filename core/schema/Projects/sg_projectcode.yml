@@ -2,6 +2,11 @@
 # field (e.g. "str"). Mirrors ../Artists/sg_projectcode.yml -- see that
 # file's comment for the full explanation. This is what makes the
 # resolved path /jobs/SlateX/Projects/{sg_projectcode}/Plates/...
+#
+# Token is $Projects (this file's own parent folder's literal name),
+# not $project -- tk-core's $token resolution matches by literal
+# ancestor folder name, and "project" only exists in the old,
+# unrelated tank_name-rooted core/schema/project/ tree.
 
 type: "shotgun_entity"
 
@@ -9,4 +14,4 @@ name: "sg_projectcode"
 
 entity_type: "Project"
 
-filters: [ { "path": "id", "relation": "is", "values": [ "$project" ] } ]
+filters: [ { "path": "id", "relation": "is", "values": [ "$Projects" ] } ]

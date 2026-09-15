@@ -6,11 +6,26 @@
 # Artists/ folder.
 #
 # type: "shotgun_entity" against the Project entity itself (not Shot or
-# any child entity) -- $project here resolves to the Project this
-# "project"-type schema node's own context belongs to, exactly the same
-# $project token used elsewhere in this schema (e.g.
-# Artists/sequence.yml's own $project filter), since a folder of type
-# "project" is itself associated with exactly one ShotGrid Project.
+# any child entity) -- $Artists here resolves to the Project this
+# "project"-type schema node's own context belongs to.
+#
+# IMPORTANT: Toolkit's $token resolution (tk-core's
+# FilterExpressionToken._resolve_ref_r in
+# folder/folder_types/expression_tokens.py) matches a $token to an
+# ancestor folder by comparing the token text against the ancestor's
+# literal on-disk folder NAME -- not by entity type. The immediate
+# parent of this file is Artists.yml, whose folder is named "Artists"
+# (not "project" -- that name only exists in the OLD, tank_name-rooted
+# core/schema/project/ tree, which is a sibling, not an ancestor, of
+# this file). So the token must be $Artists, matching this file's own
+# parent folder's name, for _resolve_ref_r to find it -- a $project
+# token here has no "project"-named folder above it to walk up to and
+# raises "could not be found in ... or in any of its parents."
+# Confirmed by reading tk-core's actual source directly (not assumed):
+# Project.__init__ (folder/folder_types/project.py) uses no_filters and
+# create_with_parent=False -- the Artists.yml root node itself needs no
+# $token at all and is unconditionally created once per project. Only
+# this child node, one level down, needs the (correctly named) token.
 
 type: "shotgun_entity"
 
@@ -22,5 +37,5 @@ entity_type: "Project"
 
 # shotgun filters to apply when getting the list of items -- this node's
 # own project is the only "Project" that should ever produce a folder
-# here, matched by id.
-filters: [ { "path": "id", "relation": "is", "values": [ "$project" ] } ]
+# here, matched by id. $Artists (not $project) -- see note above.
+filters: [ { "path": "id", "relation": "is", "values": [ "$Artists" ] } ]
