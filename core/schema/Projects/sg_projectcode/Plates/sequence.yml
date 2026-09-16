@@ -7,5 +7,13 @@ name: "code"
 # the shotgun entity type to connect to
 entity_type: "Sequence"
 
-# shotgun filters to apply when getting the list of items
-filters: [ { "path": "project", "relation": "is", "values": [ "$project" ] } ]
+# shotgun filters to apply when getting the list of items -- uses
+# $Projects, NOT $project. Mirrors
+# ../../../Artists/sg_projectcode/sequence.yml -- see that file's
+# comment for the full explanation of tk-core's ancestor-folder-name
+# $token resolution. This file's ancestors are
+# core/schema/Projects/sg_projectcode/Plates/ and
+# core/schema/Projects/sg_projectcode/ (see ../../sg_projectcode.yml) --
+# there is no folder literally named "project" above it, so $project
+# fails with the same TankError seen in production.
+filters: [ { "path": "project", "relation": "is", "values": [ "$Projects" ] } ]
