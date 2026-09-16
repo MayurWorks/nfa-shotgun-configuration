@@ -1,0 +1,4 @@
+# Static folder — always literally named "Artists".
+# Holds all in-progress artist work for this project.
+
+type: "static"
