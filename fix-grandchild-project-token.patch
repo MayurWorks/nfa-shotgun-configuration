@@ -1,0 +1,307 @@
+From 8217e9d8f1113f4b4d0f451200043128529c4f7c Mon Sep 17 00:00:00 2001
+From: SlateX Pipeline <pipeline@slatex.local>
+Date: Wed, 16 Sep 2026 05:03:45 +0000
+Subject: [PATCH] Fix $project token in Artists/Projects grandchild
+ sequence.yml files
+
+Live folder creation still failed after the prior fix (5306bef), with
+the identical error moved one level deeper:
+
+  tank.errors.TankError: Error resolving filter expression
+  [{'path': 'project', 'relation': 'is', 'values': ['$project']}] in
+  .../core/schema/Artists/sg_projectcode/sequence.yml: The
+  configuration expression $project could not be found in  or in any
+  of its parents.
+
+5306bef correctly fixed sg_projectcode.yml itself (the direct child of
+the new Artists/Projects project-type roots) but missed that
+sequence.yml, ONE LEVEL DEEPER under it, has the exact same problem for
+the exact same reason: tk-core's $token resolution walks up the schema
+tree matching against an ancestor folder's LITERAL NAME. There is no
+folder literally named 'project' above sequence.yml either (only
+'Artists' -> 'sg_projectcode' -> 'sequence'), so $project fails there
+too, regardless of sg_projectcode.yml's own token already being fixed.
+
+Fix: same pattern as 5306bef - $project -> $Artists in
+core/schema/Artists/sg_projectcode/sequence.yml, and $project ->
+$Projects in core/schema/Projects/sg_projectcode/Plates/sequence.yml.
+Verified via full grep sweep that no other $project reference remains
+anywhere in either schema tree, at any depth (shot.yml one level
+further down uses $sequence, referencing its own immediate parent
+folder - a different, already-correctly-scoped token, not $project).
+
+Also strengthened tests/test_schema_token_resolution.py: the previous
+version's static check
+(test_schema_files_use_fixed_token_not_project) was accidentally gated
+behind the same module-level tk-core-availability skipif as the
+tk-core-dependent tests, even though it needs no tk-core at all - so it
+never actually ran and could not have caught this regression despite
+being designed to guard against exactly this. Replaced with
+test_no_project_token_anywhere_in_artists_or_projects_trees, which (a)
+always runs regardless of environment, and (b) globs every .yml file
+under core/schema/Artists/ and core/schema/Projects/ at any depth,
+instead of checking a fixed list of two file paths - so a third
+occurrence at a still-deeper level in the future can't slip through
+undetected the way this one did. Also added a new tk-core-backed test,
+test_grandchild_can_still_reach_artists_token, exercising real
+FilterExpressionToken resolution two levels below the Artists root
+(the actual depth this bug occurred at), not just one level as the
+previous version tested.
+
+Full existing test suite (tests/test_templates.py, tests/
+test_schema_token_resolution.py) passes: 11 passed, 5 skipped (skipped
+tests need a real tk-core checkout, unavailable in this environment -
+same limitation as before, unchanged by this fix).
+---
+ .../Artists/sg_projectcode/sequence.yml       |  19 ++-
+ .../sg_projectcode/Plates/sequence.yml        |  12 +-
+ tests/test_schema_token_resolution.py         | 130 ++++++++++++------
+ 3 files changed, 116 insertions(+), 45 deletions(-)
+
+diff --git a/core/schema/Artists/sg_projectcode/sequence.yml b/core/schema/Artists/sg_projectcode/sequence.yml
+index 74665ad..fb2568e 100755
+--- a/core/schema/Artists/sg_projectcode/sequence.yml
++++ b/core/schema/Artists/sg_projectcode/sequence.yml
+@@ -7,5 +7,20 @@ name: "code"
+ # the shotgun entity type to connect to
+ entity_type: "Sequence"
+ 
+-# shotgun filters to apply when getting the list of items
+-filters: [ { "path": "project", "relation": "is", "values": [ "$project" ] } ]
++# shotgun filters to apply when getting the list of items -- uses
++# $Artists, NOT $project. tk-core's FilterExpressionToken resolution
++# (folder/folder_types/expression_tokens.py::_resolve_ref_r) matches a
++# $token against an ANCESTOR FOLDER'S LITERAL NAME, walking up the
++# schema tree - not by entity type. This file's ancestors are
++# core/schema/Artists/sg_projectcode/ and core/schema/Artists/ (see
++# ../sg_projectcode.yml) - there is no folder literally named "project"
++# anywhere above this file (that name only exists in the separate,
++# unrelated tank_name-rooted core/schema/project/ tree, a sibling, not
++# an ancestor). $Artists is what ../sg_projectcode.yml itself is named
++# via its parent Artists.yml, so it's the token this file's own $token
++# walk-up can actually find. A $project token here produces the exact
++# TankError seen in production: "$project could not be found in ... or
++# in any of its parents" -- this was fixed on ../sg_projectcode.yml
++# itself in a prior commit but missed here, one level deeper, causing
++# the same class of failure to resurface at this file instead.
++filters: [ { "path": "project", "relation": "is", "values": [ "$Artists" ] } ]
+diff --git a/core/schema/Projects/sg_projectcode/Plates/sequence.yml b/core/schema/Projects/sg_projectcode/Plates/sequence.yml
+index 74665ad..aac57c5 100755
+--- a/core/schema/Projects/sg_projectcode/Plates/sequence.yml
++++ b/core/schema/Projects/sg_projectcode/Plates/sequence.yml
+@@ -7,5 +7,13 @@ name: "code"
+ # the shotgun entity type to connect to
+ entity_type: "Sequence"
+ 
+-# shotgun filters to apply when getting the list of items
+-filters: [ { "path": "project", "relation": "is", "values": [ "$project" ] } ]
++# shotgun filters to apply when getting the list of items -- uses
++# $Projects, NOT $project. Mirrors
++# ../../../Artists/sg_projectcode/sequence.yml -- see that file's
++# comment for the full explanation of tk-core's ancestor-folder-name
++# $token resolution. This file's ancestors are
++# core/schema/Projects/sg_projectcode/Plates/ and
++# core/schema/Projects/sg_projectcode/ (see ../../sg_projectcode.yml) --
++# there is no folder literally named "project" above it, so $project
++# fails with the same TankError seen in production.
++filters: [ { "path": "project", "relation": "is", "values": [ "$Projects" ] } ]
+diff --git a/tests/test_schema_token_resolution.py b/tests/test_schema_token_resolution.py
+index 7c06bf9..2af8ac4 100644
+--- a/tests/test_schema_token_resolution.py
++++ b/tests/test_schema_token_resolution.py
+@@ -1,40 +1,56 @@
+ """
+ Regression test for the "$project could not be found in ... or in any
+-of its parents" TankError that live folder creation raised against
++of its parents" TankError that live folder creation raised against the
++Artists/Projects schema trees, twice: first against
+ core/schema/Artists/sg_projectcode.yml and
+-core/schema/Projects/sg_projectcode.yml.
++core/schema/Projects/sg_projectcode.yml (fixed in an earlier commit),
++then again one level deeper against
++core/schema/Artists/sg_projectcode/sequence.yml and
++core/schema/Projects/sg_projectcode/Plates/sequence.yml (fixed in this
++commit) - the first fix only updated the direct child of the new
++Artists/Projects roots and missed that the grandchild had the exact
++same problem.
+ 
+ Root cause: tk-core's FilterExpressionToken._resolve_ref_r matches a
+ $token against an ANCESTOR FOLDER'S LITERAL NAME (via
+-os.path.basename), not against entity type. Artists.yml/Projects.yml
+-are new project-type schema roots whose own folder is named "Artists"
+-/ "Projects" -- there is no folder literally named "project" anywhere
+-above them (that name only exists in the old, unrelated tank_name-
+-rooted core/schema/project/ tree). A $project token underneath them
+-therefore has nothing to bind to.
+-
+-Requires a real, importable tk-core checkout (not vendored in this
+-repo) - set TK_CORE_PYTHON_PATH to <tk-core checkout>/python to run
+-this test; it is skipped otherwise so it doesn't become a hard CI
+-dependency on an external repo.
++os.path.basename), not against entity type, walking up as many levels
++as needed. Artists.yml/Projects.yml are project-type schema roots whose
++own folder is named "Artists"/"Projects" -- there is no folder
++literally named "project" anywhere above ANY descendant of them (that
++name only exists in the old, unrelated tank_name-rooted
++core/schema/project/ tree). A $project token anywhere in either tree,
++at any depth, has nothing to bind to and fails with this TankError.
++
++test_no_project_token_anywhere_in_artists_or_projects_trees (below) is
++a static, dependency-free file-content sweep across the WHOLE Artists/
++and Projects/ trees (not a fixed list of two files) specifically so a
++third occurrence at a still-deeper level can't slip through the same
++way the grandchild did here - it always runs, with no environment
++requirement, unlike the tk-core-backed tests in this file which need a
++real tk-core checkout (set TK_CORE_PYTHON_PATH to <tk-core
++checkout>/python) and are skipped otherwise.
+ """
+ import os
+ import sys
++import glob
+ import pytest
+ 
+ TK_CORE_PATH = os.environ.get("TK_CORE_PYTHON_PATH")
++_TK_CORE_AVAILABLE = bool(TK_CORE_PATH and os.path.isdir(TK_CORE_PATH))
+ 
+-pytestmark = pytest.mark.skipif(
+-    not TK_CORE_PATH or not os.path.isdir(TK_CORE_PATH),
++if _TK_CORE_AVAILABLE:
++    sys.path.insert(0, TK_CORE_PATH)
++
++REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
++
++_requires_tk_core = pytest.mark.skipif(
++    not _TK_CORE_AVAILABLE,
+     reason=(
+         "Set TK_CORE_PYTHON_PATH to a tk-core checkout's python/ dir "
+         "to run real folder-schema token resolution tests."
+     ),
+ )
+ 
+-if TK_CORE_PATH and os.path.isdir(TK_CORE_PATH):
+-    sys.path.insert(0, TK_CORE_PATH)
+-
+ 
+ def _make_entity_node(full_path, parent, entity_type="Project"):
+     from tank.folder.folder_types.entity import Entity
+@@ -51,6 +67,45 @@ def _make_entity_node(full_path, parent, entity_type="Project"):
+     )
+ 
+ 
++def test_no_project_token_anywhere_in_artists_or_projects_trees():
++    """
++    Always runs, no tk-core needed: sweeps every .yml file under
++    core/schema/Artists/ and core/schema/Projects/ (any depth) for the
++    literal, unresolvable "$project" token in a filter value. This is
++    the check that would have caught the grandchild regression this
++    commit fixes -- the previous version of this test only checked two
++    specific file paths by name.
++    """
++    offenders = []
++    for tree in ("Artists", "Projects"):
++        pattern = os.path.join(REPO_ROOT, "core", "schema", tree, "**", "*.yml")
++        for path in glob.glob(pattern, recursive=True):
++            with open(path) as f:
++                content = f.read()
++            if '"$project"' in content or "'$project'" in content:
++                offenders.append(os.path.relpath(path, REPO_ROOT))
++    assert not offenders, (
++        "found literal $project token (unresolvable under the "
++        "Artists/Projects schema roots -- must be $Artists/$Projects "
++        "instead) in: %s" % offenders
++    )
++
++
++def test_grandchild_files_use_correct_root_token():
++    """Specific regression guard for the two files this commit fixes."""
++    for rel_path, expected_token in [
++        ("core/schema/Artists/sg_projectcode/sequence.yml", "$Artists"),
++        ("core/schema/Projects/sg_projectcode/Plates/sequence.yml", "$Projects"),
++    ]:
++        full_path = os.path.join(REPO_ROOT, rel_path)
++        with open(full_path) as f:
++            content = f.read()
++        assert expected_token in content, (
++            "%s should filter on %s" % (rel_path, expected_token)
++        )
++
++
++@_requires_tk_core
+ def test_old_project_token_fails_under_artists_root():
+     """Reproduces the exact bug seen in production folder-creation logs."""
+     from tank.folder.folder_types.expression_tokens import FilterExpressionToken
+@@ -61,6 +116,7 @@ def test_old_project_token_fails_under_artists_root():
+         FilterExpressionToken("$project", artists_root)
+ 
+ 
++@_requires_tk_core
+ def test_artists_token_resolves_under_artists_root():
+     from tank.folder.folder_types.expression_tokens import FilterExpressionToken
+ 
+@@ -70,6 +126,7 @@ def test_artists_token_resolves_under_artists_root():
+     assert tok.get_sg_data_key() == "Project"
+ 
+ 
++@_requires_tk_core
+ def test_projects_token_resolves_under_projects_root():
+     from tank.folder.folder_types.expression_tokens import FilterExpressionToken
+ 
+@@ -78,6 +135,7 @@ def test_projects_token_resolves_under_projects_root():
+     assert tok.get_entity_type() == "Project"
+ 
+ 
++@_requires_tk_core
+ def test_old_project_tree_token_unaffected():
+     """Regression guard: the pre-existing project/ tree must still work."""
+     from tank.folder.folder_types.expression_tokens import FilterExpressionToken
+@@ -87,34 +145,24 @@ def test_old_project_tree_token_unaffected():
+     assert tok.get_entity_type() == "Project"
+ 
+ 
++@_requires_tk_core
+ def test_grandchild_can_still_reach_artists_token():
++    """
++    The real regression this commit fixes, exercised against actual
++    tk-core token resolution (not just a static string check): a node
++    TWO levels below the Artists root must still resolve $Artists by
++    walking up past its immediate parent.
++    """
+     from tank.folder.folder_types.expression_tokens import FilterExpressionToken
+ 
+     artists_root = _make_entity_node("/config/core/schema/Artists", parent=None)
+     sg_projectcode_node = _make_entity_node(
+         "/config/core/schema/Artists/sg_projectcode", parent=artists_root
+     )
+-    tok = FilterExpressionToken("$Artists", sg_projectcode_node)
++    sequence_node = _make_entity_node(
++        "/config/core/schema/Artists/sg_projectcode/sequence",
++        parent=sg_projectcode_node,
++        entity_type="Sequence",
++    )
++    tok = FilterExpressionToken("$Artists", sequence_node)
+     assert tok.get_entity_type() == "Project"
+-
+-
+-def test_schema_files_use_fixed_token_not_project():
+-    """
+-    Static guard against regressing back to $project in these two
+-    files even without a tk-core checkout available - this part always
+-    runs.
+-    """
+-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+-    for rel_path, expected_token in [
+-        ("core/schema/Artists/sg_projectcode.yml", "$Artists"),
+-        ("core/schema/Projects/sg_projectcode.yml", "$Projects"),
+-    ]:
+-        full_path = os.path.join(repo_root, rel_path)
+-        with open(full_path) as f:
+-            content = f.read()
+-        assert expected_token in content, (
+-            f"{rel_path} should filter on {expected_token}, not $project"
+-        )
+-        assert '"values": [ "$project" ]' not in content, (
+-            f"{rel_path} still has the buggy unresolvable $project token"
+-        )
+-- 
+2.43.0
+
