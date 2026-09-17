@@ -69,6 +69,17 @@ settings.tk-nuke-writenode.asset:
   location: "@apps.tk-nuke-writenode.location"
 
 # shot
+#
+# NOTE on colorspace values below: tk-nuke-writenode's settings (this
+# file) are static YAML, evaluated once at env load - there is no
+# hook/settings mechanism for tk-nuke-writenode itself to pull a
+# per-project colorspace the way tk-nuke-projectsettings does (see that
+# app's COLOR_PIPELINE_PRESETS / _get_color_pipeline). The values below
+# match storm's current project (aces_acescg preset: ACES - ACEScg
+# working, ACES - Output - Rec.709 for review) - a project using a
+# different sg_color_pipeline preset will need its own write-node
+# colorspace values here until/unless this app gains the same kind of
+# per-project resolution tk-nuke-projectsettings has.
 settings.tk-nuke-writenode.shot:
   template_script_work: nuke_shot_work
   categories:
@@ -86,5 +97,31 @@ settings.tk-nuke-writenode.shot:
             channels: rgb
             compression: DWAA
           main_output: True
+
+    - category_name: review
+      write_nodes:
+        - name: mov (h264 rec709)
+          file_type: mov
+          render_template: nuke_shot_render_movie
+          # No publish counterpart exists for review movs on this site
+          # (matches every other "preview" output in this pipeline -
+          # nuke_shot_render_movie has no _pub template in tk-nuke.yml).
+          # Explicitly null rather than omitted: every working
+          # tk-nuke-writenode .mov profile example found in NFA's/
+          # Shotgun's own docs sets this key (even to null) rather than
+          # leaving it out, and this app's schema may require the key to
+          # be present at all. render_template/nuke_shot_render_movie
+          # also has no {SEQ} key (a single .mov file, not a frame
+          # sequence) - NFA's fork (pinned here, see app_locations.yml)
+          # is the version actually used, and its own docs list .mov
+          # review write nodes as a supported first-class case, unlike
+          # shotgunsoftware's original app where SEQ was historically
+          # hard-required for any render/publish template.
+          publish_template: null
+          tile_color: 2298509567
+          settings:
+            colorspace: ACES - Output - Rec.709
+            mov64_codec: h264
+            mov64_quality_max: 3
 
   location: "@apps.tk-nuke-writenode.location"
