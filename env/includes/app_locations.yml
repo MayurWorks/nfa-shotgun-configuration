@@ -265,10 +265,10 @@ apps.tk-nuke-quickreview.location:
 
 # writenode
 apps.tk-nuke-writenode.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-nuke-writenode
-  version: 2.1.2
+  type: git_branch
+  branch: main
+  path: https://github.com/MayurWorks/tk-nuke-writenode.git
+  version: 16224fb7b4bbbc2e922fda914754d72d19958395
 
 # template
 apps.tk-nuke-template.location:
@@ -295,7 +295,7 @@ apps.tk-nuke-projectsettings.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
-  version: 7df6d791273609cb5867cc726e3ac7eedd6e1e21
+  version: 111ce8e6ba02d25ae040a74f477efddfc3397fc9
 
 apps.tk-nuke-versiondropper.location:
   type: github_release
