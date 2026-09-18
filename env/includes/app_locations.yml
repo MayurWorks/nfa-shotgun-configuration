@@ -268,7 +268,7 @@ apps.tk-nuke-writenode.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke-writenode.git
-  version: 16224fb7b4bbbc2e922fda914754d72d19958395
+  version: 3234e6b03f18c91c4c64229c758e9c24c15267e0
 
 # template
 apps.tk-nuke-template.location:
