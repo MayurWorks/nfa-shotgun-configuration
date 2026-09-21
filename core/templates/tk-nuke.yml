@@ -133,10 +133,13 @@ paths:
   nuke_shot_render_pub:
     definition: "@shot_publish/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
-  # Review MOV output. Also used by tk-multi-reviewsubmission /
+  # Review MOV output, read by tk-multi-reviewsubmission /
   # tk-multi-deadlinereviewsubmission (movie_path_template /
-  # review_output_path) — keep this definition in sync with those if it
-  # ever changes.
+  # review_output_path). No {SEQ} token: those apps read one real .mov
+  # file already on disk and never call apply_fields() with a SEQ
+  # value, so this template is intentionally sequence-free. Do NOT
+  # point tk-nuke-writenode's render_template at this one — see
+  # nuke_shot_write_movie below.
   nuke_shot_render_movie:
     definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
 
@@ -144,6 +147,24 @@ paths:
   # mirroring nuke_shot_render_pub's relationship to nuke_shot_render.
   nuke_shot_render_movie_pub:
     definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
+
+  # Write-node MOV output (tk-nuke-writenode's "review" category only).
+  # tk-nuke-writenode's handler.py always injects a SEQ value into
+  # apply_fields() for every render_template it uses, regardless of
+  # file type (see handler.py's __calculate_path), so any
+  # render_template it references MUST contain {SEQ} or the app fails
+  # config validation entirely and won't load. The {SEQ} token still
+  # renders into the path exactly once since Nuke's mov64 writer
+  # ignores the %d and writes a single file; it never becomes a real
+  # per-frame sequence on disk. Kept as a distinct template rather
+  # than reusing nuke_shot_render_movie above, whose lack of {SEQ} is
+  # required for the review-submission tools that already depend on it.
+  nuke_shot_write_movie:
+    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.{SEQ}.mov"
+
+  # Published counterpart, mirroring nuke_shot_render_pub.
+  nuke_shot_write_movie_pub:
+    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.{SEQ}.mov"
 
   ##########################################################################################
   # Nuke — asset level (minimal, added to satisfy NFA's asset_step environment

@@ -88,16 +88,21 @@ settings.tk-nuke-writenode.shot:
           main_output: True
 
     # Quick review/dailies output — MOV instead of an EXR sequence.
-    # Reuses nuke_shot_render_movie, the same template
-    # tk-multi-reviewsubmission / tk-multi-deadlinereviewsubmission
-    # already write to, so a review write node and those tools land in
-    # the same place.
+    # Uses nuke_shot_write_movie, NOT nuke_shot_render_movie: this app
+    # (tk-nuke-writenode) always injects a SEQ field when resolving a
+    # render_template, so the template needs a {SEQ} token or this
+    # app's config validation fails outright and it won't load at
+    # all (see nuke_shot_write_movie's comment in
+    # core/templates/tk-nuke.yml). nuke_shot_render_movie stays
+    # {SEQ}-free for tk-multi-reviewsubmission /
+    # tk-multi-deadlinereviewsubmission, which read an already-written
+    # .mov and never supply SEQ.
     - category_name: review
       write_nodes:
         - name: mov (h264)
           file_type: mov
-          render_template: nuke_shot_render_movie
-          publish_template: nuke_shot_render_movie_pub
+          render_template: nuke_shot_write_movie
+          publish_template: nuke_shot_write_movie_pub
           tile_color: 2003395327
           settings:
             colorspace: Output - Rec.709
