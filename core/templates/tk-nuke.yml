@@ -133,9 +133,17 @@ paths:
   nuke_shot_render_pub:
     definition: "@shot_publish/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
 
-  # Review MOV output.
+  # Review MOV output. Also used by tk-multi-reviewsubmission /
+  # tk-multi-deadlinereviewsubmission (movie_path_template /
+  # review_output_path) — keep this definition in sync with those if it
+  # ever changes.
   nuke_shot_render_movie:
     definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
+
+  # Published review MOV — real, distinct location under Publish/,
+  # mirroring nuke_shot_render_pub's relationship to nuke_shot_render.
+  nuke_shot_render_movie_pub:
+    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
 
   ##########################################################################################
   # Nuke — asset level (minimal, added to satisfy NFA's asset_step environment

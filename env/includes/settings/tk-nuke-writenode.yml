@@ -87,4 +87,22 @@ settings.tk-nuke-writenode.shot:
             compression: DWAA
           main_output: True
 
+    # Quick review/dailies output — MOV instead of an EXR sequence.
+    # Reuses nuke_shot_render_movie, the same template
+    # tk-multi-reviewsubmission / tk-multi-deadlinereviewsubmission
+    # already write to, so a review write node and those tools land in
+    # the same place.
+    - category_name: review
+      write_nodes:
+        - name: mov (h264)
+          file_type: mov
+          render_template: nuke_shot_render_movie
+          publish_template: nuke_shot_render_movie_pub
+          tile_color: 2003395327
+          settings:
+            colorspace: Output - Rec.709
+            mov64_codec: H.264
+            mov64_quality_max: 3
+            mov64_fps: 24
+
   location: "@apps.tk-nuke-writenode.location"
