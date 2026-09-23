@@ -34,6 +34,14 @@ chance to apply fps/frame range/OCIO/plate Read *first*, so those
 values are correct in the file that gets written - not just correct in
 a later session after the artist happens to open it again.
 
+After that (so the plate Read it hangs its write nodes off exists), it
+also gives tk-nuke-writenode's autopilot the same chance: create the
+main/review write nodes if the script does not have them yet and point
+every write node at the render path of the version being saved. On
+save_as the path passed in is the *target* file, so the file that lands
+on disk already carries the new version's render paths instead of
+getting them one save late.
+
 This deliberately only matters for a script that has never had settings
 applied this session (see NukeProjectSettingsHandler.apply_settings_if_new
 - e.g. a script built by hand, or any path that bypassed the normal
@@ -62,6 +70,7 @@ class SceneOperation(HookClass):
     ):
         if operation in ("save", "save_as"):
             self._apply_projectsettings_before_save()
+            self._sync_writenodes_before_save(file_path)
 
         return super(SceneOperation, self).execute(
             operation,
@@ -91,5 +100,26 @@ class SceneOperation(HookClass):
             logger.warning(
                 "scene_operation_tk-nuke: tk-nuke-projectsettings "
                 "apply_settings_if_new() failed ahead of save",
+                exc_info=True,
+            )
+
+    def _sync_writenodes_before_save(self, file_path):
+        """
+        Hands the path about to be saved to tk-nuke-writenode's
+        on_before_save(), if that app is present in this environment
+        (it is Shot-scoped here too, so asset_step just does nothing).
+        file_path is None for a plain "save", in which case the app uses
+        the current script's own path.
+        """
+        try:
+            engine = self.parent.engine
+            writenode_app = engine.apps.get("tk-nuke-writenode")
+            if writenode_app is None:
+                return
+            writenode_app.on_before_save(file_path or None)
+        except Exception:
+            logger.warning(
+                "scene_operation_tk-nuke: tk-nuke-writenode "
+                "on_before_save() failed ahead of save",
                 exc_info=True,
             )
