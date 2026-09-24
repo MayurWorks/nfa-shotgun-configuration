@@ -45,6 +45,11 @@ keys:
   name:
     type: str
     filter_by: alphanumeric
+  # The step in lower case for file names (STRM_E1_0070_cmp_OS_v003.mov)
+  # while its folder keeps the short name (CMP). Not derivable from a
+  # context: tk-nuke-writenode fills it from Step.
+  step_lower:
+    type: str
   publish_extension:
     type: str
   publish_name:

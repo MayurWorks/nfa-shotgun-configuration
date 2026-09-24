@@ -149,22 +149,21 @@ paths:
     definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
 
   # Write-node MOV output (tk-nuke-writenode's "review" category only).
-  # tk-nuke-writenode's handler.py always injects a SEQ value into
-  # apply_fields() for every render_template it uses, regardless of
-  # file type (see handler.py's __calculate_path), so any
-  # render_template it references MUST contain {SEQ} or the app fails
-  # config validation entirely and won't load. The {SEQ} token still
-  # renders into the path exactly once since Nuke's mov64 writer
-  # ignores the %d and writes a single file; it never becomes a real
-  # per-frame sequence on disk. Kept as a distinct template rather
-  # than reusing nuke_shot_render_movie above, whose lack of {SEQ} is
-  # required for the review-submission tools that already depend on it.
+  # File name: <Shot>_<step in lower case>_OS_v<version>.mov, e.g.
+  # STRM_E1_0070_cmp_OS_v003.mov (OS = OpenSlate). One movie per script
+  # version, so there is no per-node part in the name; the folder part is
+  # a placeholder until the final review folder structure is decided.
+  # step_lower is not a context key: tk-nuke-writenode fills it from Step
+  # (see its __resolve_render_path). No {SEQ}: a movie is a single file
+  # (tk-nuke-writenode accepts templates without it).
+  # Kept as a distinct template rather than reusing nuke_shot_render_movie
+  # above, which the review-submission tools depend on as it is.
   nuke_shot_write_movie:
-    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.{SEQ}.mov"
+    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{step_lower}_OS_v{version}.mov"
 
   # Published counterpart, mirroring nuke_shot_render_pub.
   nuke_shot_write_movie_pub:
-    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.{SEQ}.mov"
+    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{step_lower}_OS_v{version}.mov"
 
   ##########################################################################################
   # Nuke — asset level (minimal, added to satisfy NFA's asset_step environment
