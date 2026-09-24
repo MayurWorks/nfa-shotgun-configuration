@@ -84,13 +84,12 @@ settings.tk-nuke-writenode.shot:
             colorspace: ACES - ACEScg
             datatype: 16 bit half
             # auto = rgba if what feeds the write has alpha, else rgb
-            # (decided once, when the node is created; editable after)
+            # (decided when the node is created; editable after)
             channels: auto
             compression: DWAA
           main_output: True
 
-    # Intermediate renders. This is what the "w" hotkey creates: the next
-    # free prerender / prerender2 / ... wired to the selected node.
+    # Intermediate renders: what pressing "w" gives after main.
     - category_name: prerender
       write_nodes:
         - name: exr (dwaa 16bit)
@@ -145,21 +144,20 @@ settings.tk-nuke-writenode.shot:
             colorspace: Output - Rec.709
             mov64_codec: H.264
             mov64_quality_max: 3
-            # mov64_fps is not set here: the write always uses the
+            # mov64_fps is not set here: a review movie always gets the
             # script's fps (sg_fps via tk-nuke-projectsettings).
 
-  # ---- Autopilot -------------------------------------------------------
-  # Write nodes are created and kept up to date by the pipeline (see
-  # tk-nuke-writenode's autopilot). main (EXR) and review (MOV) appear on
-  # their own, wired to the end of the comp, once the script is a saved
-  # work file; every version-up / save-as re-points their render paths.
-  auto_provision: true
-  auto_provision_categories:
-    - main
-    - review
+  # ---- On-demand write nodes -------------------------------------------
+  # Nothing creates a write node by itself. Pressing "w" creates one - a
+  # plain Write node with an "NFA ShotGrid" tab - already set up for this
+  # shot and project: first w gives main, then prerender, prerender2, ...
+  # (switch the category on the node for review). After that the node is
+  # the artist's; the pipeline only keeps its render path on the current
+  # script version, and only while the path is still the one it wrote.
+  default_category: main
+  follow_script_version: true
   # after a local render of an image sequence, leave a Read node named
   # render_<output> beside the write (refreshed on each render)
   auto_read_after_render: true
-  default_category: prerender
 
   location: "@apps.tk-nuke-writenode.location"

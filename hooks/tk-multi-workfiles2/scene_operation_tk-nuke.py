@@ -34,13 +34,11 @@ chance to apply fps/frame range/OCIO/plate Read *first*, so those
 values are correct in the file that gets written - not just correct in
 a later session after the artist happens to open it again.
 
-After that (so the plate Read it hangs its write nodes off exists), it
-also gives tk-nuke-writenode's autopilot the same chance: create the
-main/review write nodes if the script does not have them yet and point
-every write node at the render path of the version being saved. On
-save_as the path passed in is the *target* file, so the file that lands
-on disk already carries the new version's render paths instead of
-getting them one save late.
+After that it tells tk-nuke-writenode which path is about to be saved, so
+the render paths of the write nodes already in the script point at that
+version (on save_as the path passed in is the *target* file, so the file
+that lands on disk is right instead of one save late). It never creates a
+write node - those only appear when an artist presses "w".
 
 This deliberately only matters for a script that has never had settings
 applied this session (see NukeProjectSettingsHandler.apply_settings_if_new
@@ -106,8 +104,9 @@ class SceneOperation(HookClass):
     def _sync_writenodes_before_save(self, file_path):
         """
         Hands the path about to be saved to tk-nuke-writenode's
-        on_before_save(), if that app is present in this environment
-        (it is Shot-scoped here too, so asset_step just does nothing).
+        on_before_save(), which re-points existing write nodes' render
+        paths at that version (and creates nothing), if that app is
+        present in this environment.
         file_path is None for a plain "save", in which case the app uses
         the current script's own path.
         """
