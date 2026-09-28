@@ -105,7 +105,7 @@ engines.tk-nuke.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke.git
-  version: 62091b07901df4bb88066caf02f6f18ad707ab1f
+  version: 82f45a17d9ed3752a87247b5428e0824bc28ddfa
 
 # Photoshop
 engines.tk-photoshopcc.location:

@@ -28,7 +28,7 @@ apps.tk-desktop-deliveries.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-desktop-deliveries.git
-  version: 24942b733c0c51b7685b41e8821d21f33937c581
+  version: 624454d8ed80ccec6237979b15a9f9ce37f79d9e
 # ---- Multi apps
 
 # startup
@@ -268,7 +268,7 @@ apps.tk-nuke-writenode.location:
   type: git_branch
   branch: main
   path: https://github.com/MayurWorks/tk-nuke-writenode.git
-  version: a90af2f2301948556515c878781784cf12bc6944
+  version: 57329890bcddaca01300af69349381ef811b61c8
 
 # template
 apps.tk-nuke-template.location:
