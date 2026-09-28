@@ -288,6 +288,9 @@ settings.tk-multi-publish2.nuke.asset_step:
     Work Template: nuke_asset_work
   post_phase: "{self}/collector.py:{engine}/tk-multi-publish2/basic/post_phase.py"
   publish_plugins:
+    - name: Validate Render Completeness
+      hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
+      settings: {}
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
       settings: {}
@@ -314,6 +317,9 @@ settings.tk-multi-publish2.nuke.shot_step:
     Work Template: nuke_shot_work
   post_phase: "{self}/collector.py:{engine}/tk-multi-publish2/basic/post_phase.py"
   publish_plugins:
+    - name: Validate Render Completeness
+      hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
+      settings: {}
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
       settings: {}
