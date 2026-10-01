@@ -173,10 +173,10 @@ apps.tk-shotgun-launchpublish.location:
 
 # hiero export
 apps.tk-hiero-export.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-hiero-export
-  version: 0.6.0.6
+  type: git_branch
+  branch: main
+  path: https://github.com/MayurWorks/tk-hiero-export.git
+  version: ecf5a342f633d96274c8bd77424689638fd3656b
 
 # hiero openinshotgun
 apps.tk-hiero-openinshotgun.location:
