@@ -290,7 +290,8 @@ settings.tk-multi-publish2.nuke.asset_step:
   publish_plugins:
     - name: Validate Render Completeness
       hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
-      settings: {}
+      settings:
+        Strict Settings Check: false
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
       settings: {}
@@ -319,7 +320,8 @@ settings.tk-multi-publish2.nuke.shot_step:
   publish_plugins:
     - name: Validate Render Completeness
       hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
-      settings: {}
+      settings:
+        Strict Settings Check: false
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
       settings: {}

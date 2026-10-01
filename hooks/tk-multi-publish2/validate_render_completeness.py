@@ -12,10 +12,24 @@
 #
 # Only "file.image.sequence" items are created by the collector for write nodes,
 # so there is deliberately no movie filter here.
+#
+# Also checks (WARN by default, see the "Strict Settings Check" setting):
+#   - the script's root fps still matches what ShotGrid currently resolves
+#     for this shot/project via tk-nuke-projectsettings.get_pipeline_settings()
+#   - if an explicit format is set on the shot or project, the script's
+#     root format still matches it
+# This exists because of the per-shot settings-override feature: a Shot or
+# Project's fps/format/colour pipeline can be edited in ShotGrid AFTER an
+# artist already opened and started rendering, so what's in the script can
+# silently drift from what ShotGrid now says it should be. This never
+# blocks by default - a shot's settings can legitimately be overridden after
+# work started, and mid-render is not the moment to force a re-render - it
+# only makes the drift visible instead of silent.
 
 import os
 import re
 
+import nuke
 import sgtk
 
 HookBaseClass = sgtk.get_hook_baseclass()
@@ -55,6 +69,11 @@ class ValidateRenderCompletenessPlugin(HookBaseClass):
         The expected range is the write node's own frame range when
         "use limit to range" is enabled, otherwise the script frame range.
         Pixel size / colorspace are not checked.
+        <br><br>
+        Also warns (does not block, unless "Strict Settings Check" is
+        enabled) when the script's fps or format no longer matches what
+        ShotGrid currently resolves for this shot - see
+        tk-nuke-projectsettings for how that's resolved.
         """
 
     @property
@@ -78,7 +97,20 @@ class ValidateRenderCompletenessPlugin(HookBaseClass):
 
     @property
     def settings(self):
-        return {}
+        return {
+            "Strict Settings Check": {
+                "type": "bool",
+                "default": False,
+                "description": (
+                    "If True, block publish when the script's fps or "
+                    "format does not match what ShotGrid currently "
+                    "resolves for this shot (see tk-nuke-projectsettings). "
+                    "Default False: log a warning only, since settings can "
+                    "legitimately be changed in ShotGrid after an artist "
+                    "has already started work."
+                ),
+            }
+        }
 
     @property
     def item_filters(self):
@@ -122,6 +154,73 @@ class ValidateRenderCompletenessPlugin(HookBaseClass):
             if middle.lstrip("-").isdigit():
                 frames[int(middle)] = path
         return frames
+
+    def _check_settings_consistency(self, item, strict):
+        """
+        Compare the script's current root fps/format against what ShotGrid
+        resolves right now via tk-nuke-projectsettings.get_pipeline_settings.
+        Returns True unless strict is set and a mismatch is found - always
+        logs a warning on a mismatch either way. Never raises: any failure
+        to resolve (app not installed, ShotGrid unreachable) is logged at
+        debug and skipped, since this check is a bonus, not core validation.
+        """
+        try:
+            projectsettings_app = self.parent.engine.apps.get(
+                "tk-nuke-projectsettings"
+            )
+            if projectsettings_app is None:
+                self.logger.debug(
+                    "tk-nuke-projectsettings not installed - skipping "
+                    "settings consistency check."
+                )
+                return True
+
+            resolved = projectsettings_app.get_pipeline_settings(item.context)
+            if not resolved:
+                return True
+
+            root = nuke.root()
+            problems = []
+
+            if "sg_frame_rate" in resolved:
+                expected_fps, source = resolved["sg_frame_rate"]
+                current_fps = root["fps"].value()
+                if abs(float(current_fps) - float(expected_fps)) > 0.001:
+                    problems.append(
+                        "script fps is %s but ShotGrid (%s) currently says %s"
+                        % (current_fps, source, expected_fps)
+                    )
+
+            width = resolved.get("sg_format_width")
+            height = resolved.get("sg_format_height")
+            if width and height:
+                fmt = root["format"].value()
+                source = width[1]
+                if (fmt.width(), fmt.height()) != (int(width[0]), int(height[0])):
+                    problems.append(
+                        "script format is %dx%d but ShotGrid (%s) currently "
+                        "says %sx%s"
+                        % (fmt.width(), fmt.height(), source, width[0], height[0])
+                    )
+
+            if not problems:
+                return True
+
+            message = (
+                "Script settings no longer match ShotGrid for this shot: "
+                + "; ".join(problems)
+            )
+            if strict:
+                return self._fail(message)
+            self.logger.warning(message)
+            return True
+
+        except Exception:
+            self.logger.debug(
+                "Settings consistency check failed to run - skipping.",
+                exc_info=True,
+            )
+            return True
 
     def _fail(self, message, details=None):
         extra = None
@@ -185,6 +284,12 @@ class ValidateRenderCompletenessPlugin(HookBaseClass):
         self.logger.debug(
             "Render completeness OK: %d frame(s)" % len(sequence_paths)
         )
+
+        strict = settings.get("Strict Settings Check")
+        strict = strict.value if strict is not None else False
+        if not self._check_settings_consistency(item, strict):
+            return False
+
         return True
 
     def publish(self, settings, item):
