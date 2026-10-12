@@ -25,6 +25,11 @@ class BeforeAppLaunch(sgtk.Hook):
     """
 
     def execute(self, app_path, app_args, version, engine_name, **kwargs):
+        # Pipeline event log: default the shared log directory (all
+        # workstations write one JSONL file per host per day) and record the
+        # launch. Best effort - must never stop an app from launching.
+        self._start_pipeline_log(engine_name)
+
         # TEMP DIAGNOSTIC - confirms whether this hook fires at all on
         # launch, and with what context, before anything else runs.
         # Logged at error level so it can't be missed or filtered out.
@@ -186,3 +191,26 @@ class BeforeAppLaunch(sgtk.Hook):
                     self.parent.log_info(
                         "Shot is missing sg_cut_in/sg_cut_out, skipping frame range env"
                     )
+
+    def _start_pipeline_log(self, engine_name):
+        try:
+            import importlib.util
+
+            if not os.environ.get("SX_PIPELINE_LOG_DIR"):
+                root = self.parent.sgtk.roots.get("primary")
+                if root:
+                    os.environ["SX_PIPELINE_LOG_DIR"] = os.path.join(
+                        root, "_pipeline", "logs"
+                    )
+            path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                os.pardir, "tk-multi-publish2", "pipeline_health.py",
+            )
+            spec = importlib.util.spec_from_file_location("sx_pipeline_health", path)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            mod.log_event(
+                "app_launch", engine=engine_name, context=str(self.parent.context)
+            )
+        except Exception:
+            pass

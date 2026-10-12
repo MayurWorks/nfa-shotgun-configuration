@@ -291,6 +291,9 @@ settings.tk-multi-publish2.nuke.asset_step:
     - name: Validate Render Completeness
       hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
       settings: {}
+    - name: Validate Shot Settings
+      hook: "{config}/tk-multi-publish2/validate_shot_settings.py"
+      settings: {}
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
       settings: {}
@@ -307,6 +310,13 @@ settings.tk-multi-publish2.nuke.asset_step:
     - name: Submit for Review
       hook: "{engine}/tk-multi-publish2/basic/submit_for_review.py"
       settings: {}
+    - name: Update Task Status and Notify
+      hook: "{config}/tk-multi-publish2/update_task_status.py"
+      settings:
+        # Site-specific status code, e.g. rev (Pending Review). Empty leaves
+        # the task status alone and only posts the note.
+        Status After Publish: ""
+        Post Note: true
   help_url: *help_url
   location: "@apps.tk-multi-publish2.location"
 
@@ -319,6 +329,9 @@ settings.tk-multi-publish2.nuke.shot_step:
   publish_plugins:
     - name: Validate Render Completeness
       hook: "{config}/tk-multi-publish2/validate_render_completeness.py"
+      settings: {}
+    - name: Validate Shot Settings
+      hook: "{config}/tk-multi-publish2/validate_shot_settings.py"
       settings: {}
     - name: Publish to ShotGrid
       hook: "{self}/publish_file.py"
@@ -336,6 +349,13 @@ settings.tk-multi-publish2.nuke.shot_step:
     - name: Submit for Review
       hook: "{engine}/tk-multi-publish2/basic/submit_for_review.py"
       settings: {}
+    - name: Update Task Status and Notify
+      hook: "{config}/tk-multi-publish2/update_task_status.py"
+      settings:
+        # Site-specific status code, e.g. rev (Pending Review). Empty leaves
+        # the task status alone and only posts the note.
+        Status After Publish: ""
+        Post Note: true
     - name: Update Flame Clip
       hook: "{engine}/tk-multi-publish2/basic/nuke_update_flame_clip.py"
       settings:
