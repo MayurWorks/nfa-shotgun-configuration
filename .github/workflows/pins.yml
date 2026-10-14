@@ -1,0 +1,22 @@
+name: pins
+
+# Fails when a pinned commit/tag in the config does not exist on its remote -
+# e.g. a re-pin was committed before the app repo was pushed. That mistake
+# would otherwise break launches for every artist.
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 5 * * *"
+
+jobs:
+  check-pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install pyyaml
+      - run: python tools/check_pins.py
