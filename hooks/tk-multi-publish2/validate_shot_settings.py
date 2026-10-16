@@ -176,6 +176,10 @@ class ValidateShotSettingsPlugin(HookBaseClass):
         if app is None:
             self.logger.debug("tk-nuke-projectsettings not loaded, settings check skipped")
             return []
+        if not hasattr(app, "get_expected_script_settings"):
+            # older tk-nuke-projectsettings pinned in the config: nothing to compare with
+            self.logger.debug("tk-nuke-projectsettings has no get_expected_script_settings, settings check skipped")
+            return []
         expected = app.get_expected_script_settings(self.parent.context)
         if not expected:
             self.logger.warning(

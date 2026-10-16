@@ -44,7 +44,7 @@ class NukeActions(HookBaseClass):
 
     def _set_read_colorspace(self, path, sg_publish_data):
         app = self.parent.engine.apps.get("tk-nuke-projectsettings")
-        if app is None:
+        if app is None or not hasattr(app, "get_expected_script_settings"):
             return
         expected = app.get_expected_script_settings(self.parent.context)
         wanted = self._wanted_colorspace(path, sg_publish_data, expected or {})

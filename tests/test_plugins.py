@@ -114,6 +114,13 @@ def test_settings_check_skipped_without_app(nuke_env):
     assert p.validate({"Check Settings": Setting(True), "Check Nodes": Setting(False)}, None) is True
 
 
+def test_old_projectsettings_app_without_api_is_skipped(nuke_env):
+    parent = Parent(GOOD)
+    parent.engine.apps["tk-nuke-projectsettings"] = types.SimpleNamespace()  # pre-upgrade app
+    p = make_plugin(parent)
+    assert p.validate({"Check Settings": Setting(True), "Check Nodes": Setting(False)}, None) is True
+
+
 def test_unresolvable_settings_warn_not_block(nuke_env):
     p = make_plugin(Parent({}))
     assert p.validate({"Check Settings": Setting(True), "Check Nodes": Setting(False)}, None) is True
