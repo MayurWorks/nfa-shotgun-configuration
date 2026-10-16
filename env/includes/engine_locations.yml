@@ -103,9 +103,9 @@ engines.tk-motionbuilder.location:
 # nfa-shotgun-configuration / tk-nuke-projectsettings / tk-nuke-template.
 engines.tk-nuke.location:
   type: git_branch
-  branch: main
+  version: 4b00bfad9e65409daaf1bc74e35f6b76c11b6735
   path: https://github.com/MayurWorks/tk-nuke.git
-  version: 82f45a17d9ed3752a87247b5428e0824bc28ddfa
+  branch: main
 
 # Photoshop
 engines.tk-photoshopcc.location:

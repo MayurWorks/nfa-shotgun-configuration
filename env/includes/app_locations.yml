@@ -26,9 +26,9 @@ apps.tk-desktop-libraryimporter.location:
 
 apps.tk-desktop-deliveries.location:
   type: git_branch
-  branch: main
+  version: b0dc7989fecf66cbd4ea533ce6fe1843b47d86c5
   path: https://github.com/MayurWorks/tk-desktop-deliveries.git
-  version: 624454d8ed80ccec6237979b15a9f9ce37f79d9e
+  branch: main
 # ---- Multi apps
 
 # startup
@@ -174,9 +174,9 @@ apps.tk-shotgun-launchpublish.location:
 # hiero export
 apps.tk-hiero-export.location:
   type: git_branch
-  branch: main
+  version: 22a32898f8c6f21b227ea2aa3ac0db7f11306227
   path: https://github.com/MayurWorks/tk-hiero-export.git
-  version: ecf5a342f633d96274c8bd77424689638fd3656b
+  branch: main
 
 # hiero openinshotgun
 apps.tk-hiero-openinshotgun.location:
@@ -266,9 +266,9 @@ apps.tk-nuke-quickreview.location:
 # writenode
 apps.tk-nuke-writenode.location:
   type: git_branch
-  branch: main
+  version: f085dc05babae77b73b06ee901cec94659f0fc73
   path: https://github.com/MayurWorks/tk-nuke-writenode.git
-  version: dee61d5ab3acc47482c7b7d55ba576e7174d4061
+  branch: main
 
 # template
 apps.tk-nuke-template.location:
@@ -284,18 +284,18 @@ apps.tk-nuke-template.location:
   # git_branch pins to a specific commit for reproducibility, it does
   # NOT float to whatever is currently on the branch tip.
   type: git_branch
-  branch: main
+  version: 715b48934c26aedbffd118bfdebd9cead4d18bbd
   path: https://github.com/MayurWorks/tk-nuke-template.git
-  version: c05f8aeaeaf47015cc60b522191360a0965387ab
+  branch: main
 
 # project settings (fps/frame range auto-apply) - studio-local, not an
 # NFA app-store release, so pinned to a branch on our own repo instead
 # of a github_release like the apps above.
 apps.tk-nuke-projectsettings.location:
   type: git_branch
-  branch: main
+  version: 1f201f8fda5d76fa32794ae8cb95363576068b36
   path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
-  version: 2e832c3797ae15be03905173c8c64f89336704a2
+  branch: main
 
 apps.tk-nuke-versiondropper.location:
   type: github_release
