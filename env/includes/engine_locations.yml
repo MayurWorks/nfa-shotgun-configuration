@@ -103,7 +103,7 @@ engines.tk-motionbuilder.location:
 # nfa-shotgun-configuration / tk-nuke-projectsettings / tk-nuke-template.
 engines.tk-nuke.location:
   type: git_branch
-  version: 4b00bfad9e65409daaf1bc74e35f6b76c11b6735
+  version: 58bc183c7ac129f62aed08f148b40cb9b7d86a50
   path: https://github.com/MayurWorks/tk-nuke.git
   branch: main
 
