@@ -146,9 +146,13 @@ settings.tk-nuke-writenode.shot:
   # plain Write node with an "NFA ShotGrid" tab - already set up for this
   # shot and project: first w gives main, then prerender, prerender2, ...
   # (switch the category on the node for review). After that the node is
-  # the artist's; the pipeline only keeps its render path on the current
-  # script version, and only while the path is still the one it wrote.
+  # the artist's. Render versions are the node's own (v001, v002, ... per
+  # output), independent of the script version: versioning the script up
+  # never makes a new render version, rendering again does, and a version
+  # that already holds frames is never overwritten.
   default_category: main
+  # keeps the render PATH in step with the script's shot/step folders (only
+  # while the path is still the one the pipeline wrote); not the version
   follow_script_version: true
   # after a local render of an image sequence, leave a Read node named
   # render_<output> beside the write (refreshed on each render)

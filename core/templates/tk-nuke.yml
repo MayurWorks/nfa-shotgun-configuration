@@ -150,9 +150,11 @@ paths:
 
   # Write-node MOV output (tk-nuke-writenode's "review" category only).
   # File name: <Shot>_<step in lower case>_OS_v<version>.mov, e.g.
-  # STRM_E1_0070_cmp_OS_v003.mov (OS = OpenSlate). One movie per script
-  # version, so there is no per-node part in the name; the folder part is
-  # a placeholder until the final review folder structure is decided.
+  # STRM_E1_0070_cmp_OS_v003.mov (OS = OpenSlate). {version} is the write
+  # node's own render version (its own series, independent of the script
+  # version - see tk-nuke-writenode). There is no per-node part in the
+  # name; the folder part is a placeholder until the final review folder
+  # structure is decided.
   # step_lower is not a context key: tk-nuke-writenode fills it from Step
   # (see its __resolve_render_path). No {SEQ}: a movie is a single file
   # (tk-nuke-writenode accepts templates without it).
