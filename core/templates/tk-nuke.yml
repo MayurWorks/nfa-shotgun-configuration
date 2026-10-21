@@ -13,9 +13,19 @@
 #   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
 #   e.g. STRM/Artists/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
 #
+# Render / review output (per shot + step, NOT inside the Nuke/ work area):
+#   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Output/exr/<Shot>_<Step>_OS_v###.####.exr
+#   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Output/mov/HD|4K/<Shot>_<step>_OS_v###.mov
+#   <tank_name>/Artists/<Sequence>/<Shot>/<Step>/Output/mov/review/...  (review-submission tools)
+#   e.g. STRM/Artists/EP_1/STRM_E1_0080/CMP/Output/exr/STRM_E1_0080_CMP_OS_v005.1001.exr
+# The version in these names is the write node's own render version, NOT
+# the script version (see tk-nuke-writenode). Output/ is created by the
+# schema (core/schema/project/Artists/.../step/Output*), deferred to tk-nuke.
+#
 # Publish folder structure (mirrors Artists/, own top-level tree):
 #   <tank_name>/Publish/<Sequence>/<Shot>/<Step>/Nuke/<Step>/
 #   e.g. STRM/Publish/EP_2/STRM_E2_0010/Comp/Nuke/Comp/
+#   <tank_name>/Publish/<Sequence>/<Shot>/<Step>/Output/{exr,mov/HD,mov/4K,mov/review}/
 #
 # Plates:
 #   <tank_name>/Projects/Plates/<Sequence>/<Shot>/
@@ -125,47 +135,52 @@ paths:
   shot_plate:
     definition: "Projects/Plates/{Sequence}/{Shot}/{Shot}.{SEQ}.exr"
 
-  # Write node EXR output — WIP renders stay under Artists/ alongside work files.
+  # Write node EXR output - WIP renders: <Step>/Output/exr/, next to (not
+  # inside) the Nuke/ work area.
+  # e.g. STRM_E1_0080_CMP_OS_v005.1001.exr   (OS = OpenSlate)
+  # {version} is the write node's own render version, independent of the
+  # script version. There is no per-node part in the name, so every EXR
+  # write node of a shot/step (main, prerender, ...) shares one version
+  # series: a new render is always a new number, never an overwrite.
   nuke_shot_render:
-    definition: "@shot_root/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+    definition: "@shot_root/Output/exr/{Shot}_{Step}_OS_v{version}.{SEQ}.exr"
 
-  # Published EXR output — real, distinct location under Publish/.
+  # Published EXR output - real, distinct location under Publish/.
   nuke_shot_render_pub:
-    definition: "@shot_publish/Nuke/{Step}/renders/{name}/{write.output}/v{version}/{Shot}_{Step}_{name}_{write.output}_v{version}.{SEQ}.exr"
+    definition: "@shot_publish/Output/exr/{Shot}_{Step}_OS_v{version}.{SEQ}.exr"
 
   # Review MOV output, read by tk-multi-reviewsubmission /
   # tk-multi-deadlinereviewsubmission (movie_path_template /
   # review_output_path). No {SEQ} token: those apps read one real .mov
   # file already on disk and never call apply_fields() with a SEQ
   # value, so this template is intentionally sequence-free. Do NOT
-  # point tk-nuke-writenode's render_template at this one — see
+  # point tk-nuke-writenode's render_template at this one - see
   # nuke_shot_write_movie below.
   nuke_shot_render_movie:
-    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
+    definition: "@shot_root/Output/mov/review/{Shot}_{Step}_{name}_v{version}.mov"
 
-  # Published review MOV — real, distinct location under Publish/,
+  # Published review MOV - real, distinct location under Publish/,
   # mirroring nuke_shot_render_pub's relationship to nuke_shot_render.
   nuke_shot_render_movie_pub:
-    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{Step}_{name}_v{version}.mov"
+    definition: "@shot_publish/Output/mov/review/{Shot}_{Step}_{name}_v{version}.mov"
 
   # Write-node MOV output (tk-nuke-writenode's "review" category only).
-  # File name: <Shot>_<step in lower case>_OS_v<version>.mov, e.g.
-  # STRM_E1_0070_cmp_OS_v003.mov (OS = OpenSlate). {version} is the write
-  # node's own render version (its own series, independent of the script
-  # version - see tk-nuke-writenode). There is no per-node part in the
-  # name; the folder part is a placeholder until the final review folder
-  # structure is decided.
-  # step_lower is not a context key: tk-nuke-writenode fills it from Step
-  # (see its __resolve_render_path). No {SEQ}: a movie is a single file
-  # (tk-nuke-writenode accepts templates without it).
+  # <Step>/Output/mov/<HD|4K>/<Shot>_<step in lower case>_OS_v<version>.mov,
+  # e.g. STRM_E1_0070_cmp_OS_v003.mov (OS = OpenSlate). {version} is the
+  # write node's own render version (its own series, independent of the
+  # script version - see tk-nuke-writenode). {mov_size} is HD or 4K:
+  # tk-nuke-writenode fills it from the script's format (width >= 3840 is
+  # 4K). step_lower is not a context key either: tk-nuke-writenode fills
+  # it from Step (see its __render_fields). No {SEQ}: a movie is a single
+  # file (tk-nuke-writenode accepts templates without it).
   # Kept as a distinct template rather than reusing nuke_shot_render_movie
   # above, which the review-submission tools depend on as it is.
   nuke_shot_write_movie:
-    definition: "@shot_root/Nuke/{Step}/previews/{Shot}_{step_lower}_OS_v{version}.mov"
+    definition: "@shot_root/Output/mov/{mov_size}/{Shot}_{step_lower}_OS_v{version}.mov"
 
   # Published counterpart, mirroring nuke_shot_render_pub.
   nuke_shot_write_movie_pub:
-    definition: "@shot_publish/Nuke/{Step}/previews/{Shot}_{step_lower}_OS_v{version}.mov"
+    definition: "@shot_publish/Output/mov/{mov_size}/{Shot}_{step_lower}_OS_v{version}.mov"
 
   ##########################################################################################
   # Nuke — asset level (minimal, added to satisfy NFA's asset_step environment

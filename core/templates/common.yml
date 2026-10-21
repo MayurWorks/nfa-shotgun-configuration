@@ -50,6 +50,11 @@ keys:
   # context: tk-nuke-writenode fills it from Step.
   step_lower:
     type: str
+  # HD or 4K: folder of a review MOV under Output/mov/ (see tk-nuke.yml).
+  # Not a context key: tk-nuke-writenode fills it from the script's format.
+  mov_size:
+    type: str
+    choices: [HD, 4K]
   publish_extension:
     type: str
   publish_name:

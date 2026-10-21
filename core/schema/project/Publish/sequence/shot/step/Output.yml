@@ -1,0 +1,12 @@
+# Static folder - always literally named "Output".
+# Render and review output of this shot/step lives here, NOT inside the
+# Nuke/ work area:
+#   Output/exr/          EXR sequences from the write nodes
+#   Output/mov/HD, 4K/   write-node review MOVs (by format size)
+#   Output/mov/review/   review-submission movies
+# Deferred like the Nuke work area: only created when Nuke launches for
+# the task (children are created together with it).
+
+type: "static"
+
+defer_creation: "tk-nuke"

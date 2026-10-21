@@ -89,7 +89,9 @@ settings.tk-nuke-writenode.shot:
             compression: DWAA
           main_output: True
 
-    # Intermediate renders: what pressing "w" gives after main.
+    # Intermediate renders: what pressing "w" gives after main. Same folder
+    # and version series as main (Output/exr/, no output name in the file
+    # name): every render is a new version, never an overwrite.
     - category_name: prerender
       write_nodes:
         - name: exr (dwaa 16bit)
