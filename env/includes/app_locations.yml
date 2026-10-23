@@ -18,313 +18,190 @@ includes:
 # location descriptors for apps used in this configuration
 
 apps.tk-desktop-libraryimporter.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-desktop-libraryimporter
-  version: 0.3.0
-
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-desktop-libraryimporter/0.3.0
 apps.tk-desktop-deliveries.location:
-  type: git_branch
-  version: b0dc7989fecf66cbd4ea533ce6fe1843b47d86c5
-  path: https://github.com/MayurWorks/tk-desktop-deliveries.git
-  branch: main
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-desktop-deliveries
 # ---- Multi apps
 
 # startup
 apps.tk-multi-startup.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-startup
-  version: 0.2.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-startup/0.2.3
 # about
 apps.tk-multi-about.location:
-  type: app_store
-  name: tk-multi-about
-  version: v0.4.2
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-about/v0.4.2
 # breakdown
 apps.tk-multi-breakdown.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-breakdown
-  version: 1.8.0.8
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-breakdown/1.8.0.8
 # demo
 apps.tk-multi-demo.location:
-  type: app_store
-  name: tk-multi-demo
-  version: v1.3.0
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-demo/v1.3.0
 # launchapp
 apps.tk-multi-launchapp.location:
-  type: app_store
-  name: tk-multi-launchapp
-  version: v0.12.2
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-launchapp/v0.12.2
 # loader2
 apps.tk-multi-loader2.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-loader2
-  version: 1.21.0.15
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-loader2/1.21.0.15
 # publish2
 apps.tk-multi-publish2.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-publish2
-  version: 2.5.5.5
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-publish2/2.5.5.5
 # pythonconsole
 apps.tk-multi-pythonconsole.location:
-  type: git_branch
-  branch: master
-  path: https://github.com/MayurWorks/tk-multi-pythonconsole.git
-  version: 6fbb89bc1d5442f7a3ce9b7f59a5057e9221560d
-
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-multi-pythonconsole
 # reviewsubmission
 apps.tk-multi-reviewsubmission.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-reviewsubmission
-  version: 1.1.1.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-reviewsubmission/1.1.1.3
 # reviewsubmission2
 apps.tk-multi-reviewsubmission2.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-reviewsubmission2
-  version: 1.0.1.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-reviewsubmission2/1.0.1.1
 # deadinereviewsubmission
 apps.tk-multi-deadlinereviewsubmission.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-deadlinereviewsubmission
-  version: 0.2.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-deadlinereviewsubmission/0.2.1
 # screeningroom
 apps.tk-multi-screeningroom.location:
-  type: app_store
-  name: tk-multi-screeningroom
-  version: v0.5.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-screeningroom/v0.5.1
 # setframerange
 apps.tk-multi-setframerange.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-setframerange
-  version: 0.6.2
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-setframerange/0.6.2
 # shotgun panel
 apps.tk-multi-shotgunpanel.location:
-  type: app_store
-  name: tk-multi-shotgunpanel
-  version: v1.8.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-shotgunpanel/v1.8.3
 # snapshot
 apps.tk-multi-snapshot.location:
-  type: app_store
-  name: tk-multi-snapshot
-  version: v0.9.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-snapshot/v0.9.1
 # workfiles (required for Mari)
 apps.tk-multi-workfiles.location:
-  type: app_store
-  name: tk-multi-workfiles
-  version: v0.7.4
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-workfiles/v0.7.4
 # workfiles2
 apps.tk-multi-workfiles2.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-multi-workfiles2
-  version: 0.13.0.4
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-workfiles2/0.13.0.4
 # dev utils
 apps.tk-multi-devutils.location:
-  type: app_store
-  name: tk-multi-devutils
-  version: v1.2.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-multi-devutils/v1.2.1
 # ---- Shotgun apps
 
 # shotgun folders
 apps.tk-shotgun-folders.location:
-  type: app_store
-  name: tk-shotgun-folders
-  version: v0.3.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-shotgun-folders/v0.3.1
 # shotgun launchfolder
 apps.tk-shotgun-launchfolder.location:
-  type: app_store
-  name: tk-shotgun-launchfolder
-  version: v0.3.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-shotgun-launchfolder/v0.3.1
 # shotgun launchpublish
 apps.tk-shotgun-launchpublish.location:
-  type: app_store
-  name: tk-shotgun-launchpublish
-  version: v0.5.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-shotgun-launchpublish/v0.5.1
 # ---- Hiero apps
 
 # hiero export
 apps.tk-hiero-export.location:
-  type: git_branch
-  version: 22a32898f8c6f21b227ea2aa3ac0db7f11306227
-  path: https://github.com/MayurWorks/tk-hiero-export.git
-  branch: main
-
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-hiero-export
 # hiero openinshotgun
 apps.tk-hiero-openinshotgun.location:
-  type: app_store
-  name: tk-hiero-openinshotgun
-  version: v0.4.2
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-hiero-openinshotgun/v0.4.2
 # ---- Houdini apps
 
 # houdini alembicnode
 apps.tk-houdini-alembicnode.location:
-  type: app_store
-  name: tk-houdini-alembicnode
-  version: v0.5.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-alembicnode/v0.5.1
 # houdini fbxnode
 apps.tk-houdini-fbxnode.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-fbxnode
-  version: 1.0.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-fbxnode/1.0.1
 # houdini karma
 apps.tk-houdini-karma.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-karma
-  version: 1.3.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-karma/1.3.3
 # houdini mantranode
 apps.tk-houdini-mantranode.location:
-  type: app_store
-  name: tk-houdini-mantranode
-  version: v0.5.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-mantranode/v0.5.1
 # houdini cachenode
 apps.tk-houdini-cachenode.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-cachenode
-  version: 0.3.4
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-cachenode/0.3.4
 # houdini arnold
 apps.tk-houdini-arnold.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-arnold
-  version: 0.3.6
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-arnold/0.3.6
 # houdini renderman
 apps.tk-houdini-renderman.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-renderman
-  version: 0.3.6
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-renderman/0.3.6
 # houdini usd
 apps.tk-houdini-usdrop.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-usdrop
-  version: 0.1.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-usdrop/0.1.3
 # houdini usd
 apps.tk-houdini-template.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-houdini-template
-  version: 0.1.0
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-template/0.1.0
 # houdini splash screen
 apps.tk-houdini-splashscreen.location:
-  type: github_release
-  organization: maximumfx
-  repository: tk-houdini-splashscreen
-  version: 1.0.2
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-houdini-splashscreen/1.0.2
 # ---- Nuke apps
 
 # quickreview
 apps.tk-nuke-quickreview.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-nuke-quickreview
-  version: 1.1.0.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-nuke-quickreview/1.1.0.1
 # writenode
 apps.tk-nuke-writenode.location:
-  type: git_branch
-  version: fbbbf69c5ab3dddb26e06ca5c752b9af42379a6d
-  path: https://github.com/MayurWorks/tk-nuke-writenode.git
-  branch: main
-
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-nuke-writenode
 # template
 apps.tk-nuke-template.location:
-  # Pointed at our fork (not nfa-vfxim's upstream github_release) because
-  # generate_template() has a studio patch: it explicitly calls
-  # tk-nuke-projectsettings.apply_settings() once the template has been
-  # pasted in and the script is in its final state. See
-  # tk-nuke-projectsettings.location below for why git_branch is used
-  # instead of github_release - same reasoning applies here.
-  #
-  # IMPORTANT: after pushing to MayurWorks/tk-nuke-template's main
-  # branch, replace the version SHA below with the new commit hash -
-  # git_branch pins to a specific commit for reproducibility, it does
-  # NOT float to whatever is currently on the branch tip.
-  type: git_branch
-  version: 715b48934c26aedbffd118bfdebd9cead4d18bbd
-  path: https://github.com/MayurWorks/tk-nuke-template.git
-  branch: main
-
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-nuke-template
 # project settings (fps/frame range auto-apply) - studio-local, not an
 # NFA app-store release, so pinned to a branch on our own repo instead
 # of a github_release like the apps above.
 apps.tk-nuke-projectsettings.location:
-  type: git_branch
-  version: 1f201f8fda5d76fa32794ae8cb95363576068b36
-  path: https://github.com/MayurWorks/tk-nuke-projectsettings.git
-  branch: main
-
+  type: path
+  linux_path: /apps/shotgun/repos/NFA/tk-nuke-projectsettings
 apps.tk-nuke-versiondropper.location:
-  type: github_release
-  organization: nfa-vfxim
-  repository: tk-nuke-versiondropper
-  version: 0.1.3
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-nuke-versiondropper/0.1.3
 # ---- Flame apps
 
 # flame export
 apps.tk-flame-export.location:
-  name: tk-flame-export
-  type: app_store
-  version: v1.10.6
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-flame-export/v1.10.6
 # flame review
 apps.tk-flame-review.location:
-  name: tk-flame-review
-  type: app_store
-  version: v1.4.5
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-flame-review/v1.4.5
 # ---- Mari apps
 
 # project manager
 apps.tk-mari-projectmanager.location:
-  name: tk-mari-projectmanager
-  type: app_store
-  version: v1.3.1
-
+  type: path
+  linux_path: /apps/shotgun/repos/bundles/tk-mari-projectmanager/v1.3.1
 ################################################################################
 # reference all of the common frameworks
 frameworks: "@frameworks"

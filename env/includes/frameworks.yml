@@ -17,21 +17,18 @@ frameworks:
   # adobe - Common functionality for adobe products
   tk-framework-adobe_v1.x.x:
     location:
-      type: app_store
-      name: tk-framework-adobe
-      version: v1.1.6
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-adobe/v1.1.6
   # adminui - provides GUIs for administrative commands
   tk-framework-adminui_v0.x.x:
     location:
-      type: app_store
-      name: tk-framework-adminui
-      version: v0.7.2
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-adminui/v0.7.2
   # aliastranslations - provides Alias translation tools
   tk-framework-aliastranslations_v0.x.x:
     location:
-      type: app_store
-      name: tk-framework-aliastranslations
-      version: v0.2.2
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-aliastranslations/v0.2.2
   # desktopserver - provides a server to run local commands.
   #
   # Bumped from v1.5.3 to v1.8.7 to fix:
@@ -43,57 +40,44 @@ frameworks:
   # before this pin was set, with no import error.
   tk-framework-desktopserver_v1.x.x:
     location:
-      type: app_store
-      name: tk-framework-desktopserver
-      version: v1.8.7
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-desktopserver/v1.8.7
   # qtwidgets - collection of Toolkit related QT Widgets
   tk-framework-qtwidgets_v2.x.x:
     location:
-      type: app_store
-      name: tk-framework-qtwidgets
-      version: v2.12.4
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-qtwidgets/v2.12.4
   # shotgunutils v4 - Shotgun Related Utilities
   tk-framework-shotgunutils_v4.x.x:
     location:
-      version: v4.4.15
-      type: app_store
-      name: tk-framework-shotgunutils
-
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-shotgunutils/v4.4.15
   # shotgunutils v5 - Shotgun Related Utilities
   tk-framework-shotgunutils_v5.x.x:
     location:
-      type: app_store
-      name: tk-framework-shotgunutils
-      version: v5.11.2
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-shotgunutils/v5.11.2
   # widget - QT Widget Framework for Tank Apps (qtwidgets fw predecessor)
   tk-framework-widget_v0.2.x:
     location:
-      version: v0.2.8
-      type: app_store
-      name: tk-framework-widget
-
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-widget/v0.2.8
   tk-framework-widget_v1.x.x:
     location:
-      type: app_store
-      name: tk-framework-widget
-      version: v1.2.1
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-widget/v1.2.1
   # desktopclient - A client for Shotgun Create
   tk-framework-desktopclient_v0.x.x:
     location:
-      type: app_store
-      name: tk-framework-desktopclient
-      version: v0.3.2
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-desktopclient/v0.3.2
   tk-framework-lmv_v0.x.x:
     location:
-      type: app_store
-      name: tk-framework-lmv
-      version: v0.2.2
-
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-lmv/v0.2.2
   # unrealqt - PySide build for Unreal (Windows-only)
   # Needed for unreal and substance painter
   tk-framework-unrealqt_v1.x.x:
     location:
-      version: v1.2.3
-      type: github_release
-      organization: ue4plugins
-      repository: tk-framework-unrealqt
+      type: path
+      linux_path: /apps/shotgun/repos/bundles/tk-framework-unrealqt/v1.2.3
